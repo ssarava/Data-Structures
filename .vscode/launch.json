@@ -1,0 +1,122 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "BloomFilter",
+            "request": "launch",
+            "mainClass": "BloomFilter.impl.BloomFilter",
+            "projectName": "Data Structures_59df2d8"
+        },
+        {
+            "type": "java",
+            "name": "DirectedGraph",
+            "request": "launch",
+            "mainClass": "Graphs.WeightedGraph.impl.DirectedGraph",
+            "projectName": "My Data Structures_4205bac0"
+        },
+        {
+            "type": "java",
+            "name": "CAHashSet",
+            "request": "launch",
+            "mainClass": "HashSet.src.CAHashSet",
+            "projectName": "My Data Structures_4205bac0"
+        },
+        {
+            "type": "java",
+            "name": "StackQueue",
+            "request": "launch",
+            "mainClass": "Queue.src.StackQueue",
+            "projectName": "My Data Structures_4205bac0"
+        },
+        {
+            "type": "java",
+            "name": "MyBST",
+            "request": "launch",
+            "mainClass": "MyBST",
+            "projectName": "My Data Structures_4205bac0"
+        },
+        {
+            "type": "java",
+            "name": "MySinglyLinkedList",
+            "request": "launch",
+            "mainClass": "MySinglyLinkedList",
+            "projectName": "My Data Structures_4205bac0"
+        },
+        {
+            "type": "java",
+            "name": "Driver",
+            "request": "launch",
+            "mainClass": "DoublyLinkedList.src.Driver",
+            "projectName": "Data Structure Implementations_6c3a95bc"
+        },
+        {
+            "type": "java",
+            "name": "Driver",
+            "request": "launch",
+            "mainClass": "SinglyLinkedList.Java.src.Driver",
+            "projectName": "Data Structure Implementations_6c3a95bc"
+        },
+        {
+            "type": "java",
+            "name": "MyStack",
+            "request": "launch",
+            "mainClass": "Stack.src.MyStack",
+            "projectName": "Data Structure Implementations_6c3a95bc"
+        },
+        {
+            "type": "java",
+            "name": "Driver",
+            "request": "launch",
+            "mainClass": "Stack.src.Driver",
+            "projectName": "Data Structure Implementations_6c3a95bc"
+        },
+        {
+            "type": "java",
+            "name": "MyDeque",
+            "request": "launch",
+            "mainClass": "Deque.src.MyDeque",
+            "projectName": "Data Structure Implementations_6c3a95bc"
+        },
+        {
+            "type": "java",
+            "name": "Driver",
+            "request": "launch",
+            "mainClass": "Stack.src.Driver",
+            "projectName": "Data Structure Implementations_783006ac"
+        },
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Driver",
+            "request": "launch",
+            "mainClass": "DoublyLinkedList.src.Driver",
+            "projectName": "Data Structure Implementations_783006ac"
+        },
+        {
+            "type": "java",
+            "name": "Driver(1)",
+            "request": "launch",
+            "mainClass": "SinglyLinkedList.src.Driver",
+            "projectName": "Data Structure Implementations_783006ac"
+        },
+        {
+            "name": "C/C++: clang build and debug active file",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "C/C++: clang build active file"
+        }
+    ]
+}

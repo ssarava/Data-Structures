@@ -1,0 +1,10 @@
+UnionFind 9
+union1 4 3
+union1 0 3
+union1 3 2
+union1 2 1
+union1 5 1
+union1 8 7
+union1 7 6
+union2 3 8
+dump
