@@ -3,20 +3,20 @@ package LinkedList.impl;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Queue;
 
 // This class represents an implementation of a Singly Linked List, as was done in CMSC132 with Dr. Emad. There will NOT be a 'tail' reference
-public class SinglyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
+public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
 
     public static void main(String[] args) {
         SinglyLinkedList<Integer> list1 = new SinglyLinkedList<>();
 
         // for (int index = 1; index < 6; index ++) {
-        // list1.addLast(index);
+        // list1.offer(index);
         // }
         System.out.println(list1);
         list1.reverse();
@@ -370,7 +370,6 @@ public class SinglyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
     }
 
     // needs testing
-    @Override
     public boolean add(T e) {
         add(size, e);
         return true;
@@ -645,29 +644,11 @@ public class SinglyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
     }
 
     // needs testing
-    public void addLast(T e) {
-        add(size, e);
-    }
-
-    // needs testing
     public boolean offerFirst(T e) {
         addFirst(e);
         return true;
     }
 
-    // needs testing
-    public boolean offerLast(T e) {
-        addLast(e);
-        return true;
-    }
-
-    // needs testing
-    public T removeFirst() {
-        if (size == 0) {
-            throw new NoSuchElementException("List is empty; cannot retrieve elements.");
-        }
-        return remove(0);
-    }
 
     // needs testing
     public T removeLast() {
@@ -678,21 +659,8 @@ public class SinglyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
     }
 
     // needs testing
-    public T pollFirst() {
-        return size == 0 ? null : removeFirst();
-    }
-
-    // needs testing
     public T pollLast() {
         return size == 0 ? null : removeLast();
-    }
-
-    // needs testing
-    public T getFirst() {
-        if (size == 0) {
-            throw new NoSuchElementException("List is empty; cannot retrieve elements.");
-        }
-        return head.data;
     }
 
     // needs testing
@@ -701,11 +669,6 @@ public class SinglyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
             throw new NoSuchElementException("List is empty; cannot retrieve elements.");
         }
         return tail.data;
-    }
-
-    // needs testing
-    public T peekFirst() {
-        return size == 0 ? null : head.data;
     }
 
     // needs testing
@@ -765,27 +728,20 @@ public class SinglyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
 
     // needs testing
     public T poll() {
-        return pollFirst();
+        return size == 0 ? null : remove(0);
     }
 
     // needs testing
     public T element() {
-        return getFirst();
+        if (size == 0) {
+            throw new NoSuchElementException("List is empty; cannot retrieve elements.");
+        }
+        return head.data;
     }
 
     // needs testing
     public T peek() {
-        return peekFirst();
-    }
-
-    // needs testing
-    public void push(T e) {
-        addFirst(e);
-    }
-
-    // needs testing
-    public T pop() {
-        return removeFirst();
+        return size == 0 ? null : head.data;
     }
 
     public Iterator<T> descendingIterator() {
