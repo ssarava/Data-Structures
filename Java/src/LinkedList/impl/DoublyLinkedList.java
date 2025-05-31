@@ -107,7 +107,13 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
      * are no conditions
      * needed for this method to be invoked.
      */
-    public void removeAllInstances(T targetData) {
+    public void removeAllInstances(Object targetData) {
+        if (targetData == null) {
+            return;
+        }
+        if (targetData.getClass() != head.data.getClass()) {
+            throw new ClassCastException(targetData.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
+        }
         Node curr = head, tempHead = head;
         boolean nonTargetNode = false;
 
@@ -208,10 +214,6 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         return true;
     }
     
-    /**
-     * Determines whether this list contains the argument.
-     */
-    @SuppressWarnings("unchecked")
     public boolean contains(Object o) {
         if (o == null) {
             throw new NullPointerException("List does not contain null elements.");
@@ -219,10 +221,9 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         if (o.getClass() != head.data.getClass()) {
             throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
         }
-        T temp = (T) o;
         Node curr = head;
         while (curr != null) {
-            if (curr.data.equals(temp)) {
+            if (curr.data.equals(o)) {
                 return true;
             }
             curr = curr.next;
@@ -230,22 +231,16 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         return false;
     }
 
-    // Returns the index of the first occurrence of the specified element in this
-    // list, or -1 if this list does not contain the element.
-    @SuppressWarnings("unchecked")
-    public int indexOf(Object data) {
+    public int indexOf(Object o) {
         int index = 0;
-        T temp = (T) data;
         for (Node curr = head; curr != null; curr = curr.next, index ++) {
-            if (curr.data.equals(temp)) {
+            if (curr.data.equals(o)) {
                 return index;
             }
         }
         return -1;
     }
 
-    // Returns the index of the last occurrence of the specified element in this
-    // list, or -1 if this list does not contain the element.
     public int lastIndexOf(Object element) {
         if (element == null) {
             throw new NullPointerException("Cannot remove a null reference from the list.");
@@ -336,13 +331,11 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
             Node curr = index < size / 2 ? head : tail;
             int currIndex = index < size / 2 ? 0 : size - 1;
             if (index < size / 2) {
-                System.out.println("BEFORE halfway");
                 while (currIndex < index) {
                     curr = curr.next;
                     currIndex++;
                 }
             } else {
-                System.out.println("halfway BEYOND");
                 while (currIndex > index) {
                     curr = curr.prev;
                     currIndex--;
@@ -356,6 +349,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         return data;
     }
 
+    // needs testing
     public void add(int index, T element) {
         if (index < 0 || index > size + 1) {
             throw new IndexOutOfBoundsException("Can't insert at index " + index + " because it's out of bounds!");
@@ -372,7 +366,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
                 head.prev = toAdd;
             }
             head = toAdd;
-        } else if (index == size) {
+        } else if (index == size - 1) {
             // add before the last element
             if (size == 0) {
                 head = toAdd;
@@ -383,7 +377,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
                 toAdd.prev.next = toAdd;
                 toAdd.next.prev = toAdd;
             }
-        } else if (index == size + 1) {
+        } else if (index == size) {
             // append to end of the list
             if (size == 0) {
                 head = toAdd;
@@ -397,14 +391,12 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
             int currIndex = index < size / 2 ? 0 : size - 1;
 
             if (index < size / 2) {
-                System.out.println("before halfway");
                 while (curr != null && currIndex < index - 1) {
                     curr = curr.next;
                     currIndex++;
                 }
 
             } else {
-                System.out.println("halfway beyond");
                 while (curr != null && currIndex > index - 1) {
                     curr = curr.prev;
                     currIndex--;
@@ -441,12 +433,12 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
 
     // needs testing
     public Object[] toArray() {
-        Object[] ret = new Object[size];
+        Object[] arr = new Object[size];
         int index = 0;
         for (Node curr = head; curr != null; curr = curr.next) {
-            ret[index++] = curr.data;
+            arr[index++] = curr.data;
         }
-        return ret;
+        return arr;
     }
 
     // needs testing
@@ -524,7 +516,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         }
         int initialSize = size;
         for (T element : c) {
-            add(size + 1, element);
+            addLast(element);
         }
         return size == initialSize;
     }
@@ -548,7 +540,6 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
     }
 
     // needs testing
-    @SuppressWarnings("unchecked")
     public boolean removeAll(Collection<?> c) {
         if (c == null) {
             throw new NullPointerException("Cannot access elements given a null reference.");
@@ -558,7 +549,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         }
         int initialSize = size;
         for (Object element : c) {
-            removeAllInstances((T) element);
+            removeAllInstances(element);
         }
         return size == initialSize;
     }
@@ -732,17 +723,11 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
     }
 
     public void addFirst(T e) {
-        if (e == null) {
-            throw new NullPointerException("Cannot remove a null reference from the list.");
-        }
         add(0, e);
     }
 
     public void addLast(T e) {
-        if (e == null) {
-            throw new NullPointerException("Cannot remove a null reference from the list.");
-        }
-        add(size + 1, e);
+        add(size, e);
     }
 
     public boolean offerFirst(T e) {
@@ -788,7 +773,6 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
     }
 
     // needs testing
-    @SuppressWarnings("unchecked")
     public boolean removeLastOccurrence(Object o) {
         if (o == null) {
             throw new NullPointerException("Cannot remove a null reference from the list.");
@@ -799,9 +783,8 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         if (size == 0) {
             return false;
         }
-        T temp = (T) o;
         int targIndex = size - 1, initialSize = size;
-        for (Node curr = tail; curr != null && !curr.data.equals(temp); curr = curr.prev) {
+        for (Node curr = tail; curr != null && !curr.data.equals(o); curr = curr.prev) {
             targIndex --;
         }
         if (targIndex == -1) {
