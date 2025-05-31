@@ -2,7 +2,7 @@ package Trees;
 
 import java.util.Collection;
 
-public interface Tree<T> extends Collection<T> {
+public interface MyTree<T> extends Collection<T> {
     
     void insert(T element);
 
@@ -23,18 +23,4 @@ public interface Tree<T> extends Collection<T> {
      *         is not supported by this collection
      */
     boolean delete(Object o);
-
-    @Override
-    default boolean containsAll(Collection<?> c) {
-        System.out.println("tree 'containsAll()' run!");
-        if (this == c) {
-            return true;
-        }
-        for (Object element : c) {
-            if (!contains(element)) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

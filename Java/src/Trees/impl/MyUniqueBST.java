@@ -6,21 +6,20 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 import LinkedList.impl.DoublyLinkedList;
 import LinkedList.impl.SinglyLinkedList;
 import Stack.src.MyStack;
-import Trees.Tree;
-
+import Trees.MyTree;
 /**
- * This implementation of a Binary Search Tree assumes that all elements are unique.
- * Methods include {@link #add(value)}, {@link #remove(value)}, {@link #search(value)},
- * {@link #min()}, and {@link #max()}. Traversals include {@link #bfs()}, {@link #dfs()}.
+ * My implementation of a binary search tree that does not support duplicates.
+ * Some flattening/unflattening methods need to be implemented
  */
-public class MyBST<T extends Comparable<T>> implements Tree<T> {
+public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
 
     public static void main(String[] args) {
-        MyBST<Integer> tree1 = new MyBST<>();
+        MyUniqueBST<Integer> tree1 = new MyUniqueBST<>();
         
         tree1.insert(40);
         tree1.insert(20);
@@ -72,7 +71,7 @@ public class MyBST<T extends Comparable<T>> implements Tree<T> {
     public Node root;
     private int size;
 
-    public MyBST() {
+    public MyUniqueBST() {
         this.root = null;
         this.size = 0;
     }
@@ -165,6 +164,9 @@ public class MyBST<T extends Comparable<T>> implements Tree<T> {
     }
 
     private T inorderSuccessor(Node node) {
+        if (size == 0) {
+            return null;
+        }
         Node curr = node.right;
         // go right once, then left as far as possible
         while (curr != null && curr.left != null) {
@@ -483,6 +485,20 @@ public class MyBST<T extends Comparable<T>> implements Tree<T> {
             remove(element);
         }
         return size == initialSize;
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        System.out.println("tree 'containsAll()' run!");
+        if (this == c) {
+            return true;
+        }
+        for (Object element : c) {
+            if (!contains(element)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
