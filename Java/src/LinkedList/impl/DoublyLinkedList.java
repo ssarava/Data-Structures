@@ -1,9 +1,20 @@
 package LinkedList.impl;
 
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Deque;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
-// this class represents an implementation of a doubly linked list WITH a tail reference
-public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
+/**
+ * My implementation of a doubly linked list, with no reliance on structures from Java Collections.
+ * Aside from the {@code toArray} method, whose implementation is identical to Java's LinkedList class's, everything was written from scratch.
+ * Some methods that are rarely used by most users have yet to be written.
+ */
+public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
 
     public static void main(String[] args) {
         DoublyLinkedList<Integer> list1 = new DoublyLinkedList<>();
@@ -18,7 +29,7 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
         while (iter.hasNext()) {
             System.out.println(iter.next());
         }
-        
+
         Iterator<Integer> revIter = list1.reverseIterator();
         while (revIter.hasNext()) {
             System.out.println(revIter.next());
@@ -26,7 +37,7 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
 
     }
 
-    public class Node {
+    public class Node implements Cloneable {
 
         private Node next, prev;
         private T data;
@@ -39,30 +50,25 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
 
         @Override
         public String toString() {
-            return "NODE! data = " + data.toString();
+            return "data: " + data.toString();
+        }
+
+        @Override
+        public Node clone() {
+            return new Node(data);
         }
     }
 
     private Node head, tail;
     private int size;
-    final static int EMPTY_LIST = 0, SINGLE_NODE = 1;
 
+    /**
+     * Creates an empty DoubleLinkedList
+     */
     public DoublyLinkedList() {
         head = null;
         tail = null;
-        size = EMPTY_LIST;
-    }
-
-    /**
-     * Initialize a linked list of nulls
-     * 
-     * @param size
-     */
-    public DoublyLinkedList(int sizeIn) {
-        for (int index = 0; index < sizeIn; index ++) {
-            addToFront(null);
-        }
-        size = sizeIn;
+        size = 0;
     }
 
     public int size() {
@@ -78,7 +84,7 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
      * one.
      * There are no conditions needed for this method to be invoked.
      */
-    public void addToEnd(T element) {
+    private void addToEnd(T element) {
         add(size + 1, element);
     }
 
@@ -87,79 +93,39 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
      * 
      * @param data
      */
-    public void addToFront(T element) {
+    private void addToFront(T element) {
         add(0, element);
     }
-
-    /*
-     * The following method is a getter for the BasicLinkedList's head's data. If
-     * the BasicLinkedList is not
-     * empty, the method returns the data (of generic type 'T') contained within the
-     * head; otherwise,
-     * 'null' is returned. This method has no parameters, side effects, nor
-     * conditions needed for
-     * this method to be invoked.
-     */
+    
+    @Override
     public T getFirst() {
         if (size == 0) {
-            throw new UnsupportedOperationException("list is empty! Add elements before retrieving them.");
+            throw new NoSuchElementException("List is empty; cannot retrieve elements.");
         }
         return head.data;
     }
 
-    /**
-     * The following method is a getter for the BasicLinkedList's tail. If the
-     * BasicLinkedList is not empty, the method returns the data (of generic type
-     * 'T')
-     * contained within the tail; otherwise, 'null' is returned. This method has no
-     * parameters, side effects, nor conditions needed for this method to be
-     * invoked.
-     */
+    @Override
     public T getLast() {
-        return tail == null ? null : tail.data;
+        if (size == 0) {
+            throw new NoSuchElementException("List is empty; cannot retrieve elements.");
+        }
+        return tail.data;
     }
 
-    /**
-     * The following method removes the BasicLinkedList's head and returns its data.
-     * The only side effect is decreasing the BasicLinkedList's size by one.
-     * This method has no parameters nor conditions needed to be invoked.
-     */
+    @Override
     public T removeFirst() {
-        // if (isEmpty()) {
-        // return null;
-        // }
-        // T data = head.data;
-        // if (size == SINGLE_NODE) {
-        // head = null;
-        // tail = null;
-        // } else {
-        // head.next.prev = null;
-        // head = head.next;
-        // }
-        // size--;
-        // return data;
+        if (size == 0) {
+            throw new NoSuchElementException("List is empty; cannot retrieve elements.");
+        }
         return remove(0);
     }
 
-    /**
-     * The following method removes the BasicLinkedList's tail and returns its data.
-     * The only side effect is decreasing the BasicLinkedList's size by one.
-     * This method has no parameters nor conditions needed to be invoked.
-     */
+    @Override
     public T removeLast() {
-        // if (isEmpty()) {
-        //     return null;
-        // }
-        // T data = tail.data;
-        // if (size == SINGLE_NODE) {
-        //     head = null;
-        //     tail = null;
-        // } else {
-        //     tail.prev.next = null;
-        //     tail = tail.prev;
-        // }
-        // size--;
-        // return data;
+        if (size == 0) {
+            throw new NoSuchElementException("List is empty; cannot retrieve elements.");
+        }
         return remove(size - 1);
     }
 
@@ -210,9 +176,6 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
         }
     }
 
-    /**
-     * Returns an iterator for this list
-     */
     @Override
     public Iterator<T> iterator() {
 
@@ -234,7 +197,7 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
         };
     }
 
-    public Iterator<T> reverseIterator() {
+    private Iterator<T> reverseIterator() {
         return new Iterator<T>() {
 
             private Node curr = tail;
@@ -256,7 +219,7 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
 
     @Override
     public String toString() {
-        if (isEmpty()) {
+        if (size == 0) {
             return null;
         }
         StringBuilder sb = new StringBuilder("");
@@ -267,8 +230,9 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
         return sb.append(" null").toString();
     }
 
-    private boolean isEmpty() {
-        return size == EMPTY_LIST;
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
     }
 
     @Override
@@ -296,23 +260,23 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
         }
         return true;
     }
-
-    //--------------------------------------------------------------------------------------------------------------------------------
-    // //
-    // Additional LinkedList methods that Java LinkedLists have - more so for
-    // practice //
-    //--------------------------------------------------------------------------------------------------------------------------------
-
+    
     /**
      * Determines whether this list contains the argument.
-     * 
-     * @param data
-     * @return
      */
-    public boolean contains(T data) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean contains(Object o) {
+        if (o == null) {
+            throw new NullPointerException("List does not contain null elements.");
+        }
+        if (o.getClass() != head.data.getClass()) {
+            throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
+        }
+        T temp = (T) o;
         Node curr = head;
         while (curr != null) {
-            if (curr.data.equals(data)) {
+            if (curr.data.equals(temp)) {
                 return true;
             }
             curr = curr.next;
@@ -322,26 +286,31 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
 
     // Returns the index of the first occurrence of the specified element in this
     // list, or -1 if this list does not contain the element.
-    public int indexOf(T data) {
+    @SuppressWarnings("unchecked")
+    public int indexOf(Object data) {
         int index = 0;
-        Node curr = head;
-        while (curr != null) {
-            if (curr.data.equals(data)) {
+        T temp = (T) data;
+        for (Node curr = head; curr != null; curr = curr.next, index ++) {
+            if (curr.data.equals(temp)) {
                 return index;
             }
-            index ++;
-            curr = curr.next;
         }
         return -1;
     }
 
     // Returns the index of the last occurrence of the specified element in this
     // list, or -1 if this list does not contain the element.
-    public int lastIndexOf(T data) {
+    public int lastIndexOf(Object element) {
+        if (element == null) {
+            throw new NullPointerException("Cannot remove a null reference from the list.");
+        }
+        if (element.getClass() != head.data.getClass()) {
+            throw new ClassCastException(element.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
+        }
         int index = size - 1;
         Node curr = tail;
         while (curr != null) {
-            if (curr.data.equals(data)) {
+            if (curr.data.equals(element)) {
                 return index;
             }
             index--;
@@ -350,9 +319,16 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
         return -1;
     }
 
-    // Replaces the element at the specified position in this list with the
-    // specified element.
     public T set(int index, T element) {
+        if (element == null) {
+            throw new NullPointerException("Cannot remove a null reference from the list.");
+        }
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("cannot set element at index " + index);
+        }
+        if (element.getClass() != head.data.getClass()) {
+            throw new ClassCastException(element.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
+        }
         Node curr;
         int currIndex;
         T data;
@@ -361,7 +337,7 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
             curr = head;
             while (curr != null && currIndex < index) {
                 curr = curr.next;
-                currIndex ++;
+                currIndex++;
             }
 
         } else {
@@ -388,58 +364,11 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
         Node curr = head;
         while (counter < index) {
             curr = curr.next;
-            counter ++;
+            counter++;
         }
         return curr.data;
     }
 
-    // helper method for cloning
-    private Node cloneGet(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("cannot retrieve at index " + index);
-        }
-        if (index == 0) {
-            return head;
-        }
-        int counter = 0;
-        Node curr = head;
-        while (counter < index) {
-            curr = curr.next;
-            counter ++;
-        }
-        return curr;
-    }
-
-    // helper method for cloning
-    private void cloneSet(int index, Node replacement) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("cannot retrieve at index " + index);
-        }
-        if (index == 0) {
-            head.next.prev = replacement;
-            replacement.next = head.next;
-            head = replacement;
-        } else if (index == size - 1) {
-            replacement.prev = tail.prev;
-            tail.prev.next = replacement;
-            tail = replacement;
-        } else {
-            int counter = 0;
-            Node curr = head;
-            while (counter < index) {
-                curr = curr.next;
-                counter ++;
-            }
-            curr.next.prev = replacement;
-            replacement.next = curr.next;
-            curr.prev.next = replacement;
-            replacement.prev = curr.prev;
-        }
-
-    }
-
-    // Removes the element at the specified position in this list. Returns the
-    // element that was removed from the list.
     public T remove(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("cannot remove at index " + index);
@@ -464,7 +393,7 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
                 System.out.println("BEFORE halfway");
                 while (currIndex < index) {
                     curr = curr.next;
-                    currIndex ++;
+                    currIndex++;
                 }
             } else {
                 System.out.println("halfway BEYOND");
@@ -482,14 +411,17 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
     }
 
     /**
-     * Inserts the specified element at the specified position in this 
-     * list. Shifts the element currently at that position (if any) 
+     * Inserts the specified element at the specified position in this
+     * list. Shifts the element currently at that position (if any)
      * and any subsequent elements to the right.
      */
 
     public void add(int index, T element) {
         if (index < 0 || index > size + 1) {
-            throw new IndexOutOfBoundsException("can't insert at index " + index);
+            throw new IndexOutOfBoundsException("Can't insert at index " + index + " because it's out of bounds!");
+        }
+        if (element == null) {
+            throw new NullPointerException("Cannot add a null reference to the list.");
         }
         Node toAdd = new Node(element);
         if (index == 0) {
@@ -520,8 +452,7 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
                 tail.next = toAdd;
             }
             tail = toAdd;
-        }
-        else {
+        } else {
             Node curr = index < size / 2 ? head : tail;
             int currIndex = index < size / 2 ? 0 : size - 1;
 
@@ -529,7 +460,7 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
                 System.out.println("before halfway");
                 while (curr != null && currIndex < index - 1) {
                     curr = curr.next;
-                    currIndex ++;
+                    currIndex++;
                 }
 
             } else {
@@ -543,17 +474,484 @@ public class DoublyLinkedList<T> implements Iterable<T>, Cloneable {
             toAdd.prev = curr.prev;
             curr.next = toAdd;
         }
-        size ++;
+        size++;
     }
 
-    // incomplete... returns a shallow copy of this linked list; nodes nor their
-    // data aren't copied
+    // needs testing
+    @SuppressWarnings("unchecked")
     @Override
-    public DoublyLinkedList<T> clone() {
-        DoublyLinkedList<T> newList = new DoublyLinkedList<>(size);
-        for (int index = 0; index < size; index ++) {
-            newList.cloneSet(index, cloneGet(index));
+    public DoublyLinkedList<T> clone() throws CloneNotSupportedException {
+        DoublyLinkedList<T> copy = (DoublyLinkedList<T>) super.clone();
+        copy.head = head;
+        copy.tail = tail;
+        copy.size = size;
+        return copy;
+    }
+
+    /**
+     * Returns a deep copy of this DoublyLinkedList.
+     */
+    public DoublyLinkedList<T> deepClone() {
+        DoublyLinkedList<T> newList = new DoublyLinkedList<>();
+        for (Node curr = head; curr != null; curr = curr.next) {
+            newList.add(curr.data);
         }
         return newList;
+    }
+
+    // needs testing
+    @Override
+    public Object[] toArray() {
+        Object[] ret = new Object[size];
+        int index = 0;
+        for (Node curr = head; curr != null; curr = curr.next) {
+            ret[index++] = curr.data;
+        }
+        return ret;
+    }
+
+    // needs testing
+    @SuppressWarnings({ "unchecked", "hiding" })
+    @Override
+    public <T> T[] toArray(T[] a) {
+        // make 'a' larger if it's smaller than this list
+        if (a.length < size) {
+            a = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+        }
+        Object[] pointer = a; // needed to resolve compiler type conversion conflict
+        int index = 0;
+        for (Node curr = head; curr != null; curr = curr.next) {
+            pointer[index++] = curr.data;
+        }
+
+        // set first element immediately following the last element to null (useful for determining size of the list since no null elements are allowed in the list)
+        if (a.length > size) {
+            a[size] = null; 
+        }
+        return a;
+    }
+
+    // needs testing
+    @Override
+    public boolean add(T element) {
+        if (element == null) {
+            throw new NullPointerException("Cannot add a null reference to the list.");
+        }
+        if (element.getClass() != head.data.getClass()) {
+            throw new ClassCastException(element.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
+        }
+        addToEnd(element);
+        return true;
+    }
+
+    // needs testing
+    @Override
+    public boolean remove(Object o) {
+        if (o == null) {
+            throw new NullPointerException("Cannot remove a null reference from the list.");
+        }
+        if (o.getClass() != head.data.getClass()) {
+            throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
+        }
+        if (size == 0) {
+            return false;
+        }
+
+        int targIndex = indexOf(o);
+        if (targIndex == -1) {
+            return false;
+        }
+        remove(targIndex);
+        return true;
+    }
+
+    // needs testing
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        if (this == c) {
+            return true;
+        }
+        for (Object element : c) {
+            if (!contains(element)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // needs testing
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
+        if (c == null) {
+            throw new NullPointerException("Cannot add a null reference to the list.");
+        }
+        if (this == c) {
+            throw new ConcurrentModificationException("Adding elements to this list, from this list, isn't allowed.");
+        }
+        int initialSize = size;
+        for (T element : c) {
+            addToEnd(element);
+        }
+        return size == initialSize;
+    }
+
+    // needs testing
+    public boolean addAll(int index, Collection<? extends T> c) {
+        if (c == null) {
+            throw new NullPointerException("Cannot add a null reference to the list.");
+        }
+        if (this == c) {
+            throw new ConcurrentModificationException("Adding elements to this list, from this list, isn't allowed.");
+        }
+        int ind = 0, initialSize = size;
+        while (ind < index) {
+            index++;
+        }
+        for (T element : c) {
+            add(ind++, element);
+        }
+        return size == initialSize;
+    }
+
+    // needs testing
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        if (c == null) {
+            throw new NullPointerException("Cannot access elements given a null reference.");
+        }
+        if (this == c) {
+            throw new ConcurrentModificationException("Adding elements to this list, from this list, isn't allowed.");
+        }
+        int initialSize = size;
+        for (Object element : c) {
+            removeAllInstances((T) element);
+        }
+        return size == initialSize;
+    }
+
+    // needs testing
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        if (this == c) {
+            return false;
+        }
+        int initialSize = 0;
+        DoublyLinkedList<T> toRemove = new DoublyLinkedList<>();
+        for (T element: this) {
+            if (!c.contains(element)) {
+                toRemove.add(element);
+            }
+        }
+        for (T element: toRemove) {
+            removeAllInstances(element);
+        }
+        return size == initialSize;
+    }
+
+    @Override
+    public void clear() {
+        head = null;
+        tail = null;
+        size = 0;
+    }
+
+    // incomplete... needs testing
+    public ListIterator<T> listIterator() {
+        return new ListIterator<>() {
+
+            private Node curr = head;
+            private int currInd = 0;
+
+            @Override
+            public boolean hasNext() {
+                return curr != null;
+            }
+
+            @Override
+            public T next() {
+                T data = curr.data;
+                curr = curr.next;
+                currInd++;
+                return data;
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return curr != null;
+            }
+
+            @Override
+            public T previous() {
+                T data = curr.data;
+                curr = curr.prev;
+                currInd--;
+                return data;
+            }
+
+            @Override
+            public int nextIndex() {
+                return currInd + 1;
+            }
+
+            @Override
+            public int previousIndex() {
+                return currInd - 1;
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Unimplemented method 'remove'");
+            }
+
+            @Override
+            public void set(T e) {
+                throw new UnsupportedOperationException("Unimplemented method 'set'");
+            }
+
+            @Override
+            public void add(T e) {
+                throw new UnsupportedOperationException("Unimplemented method 'add'");
+            }
+
+        };
+    }
+
+    // incomplete... needs testing
+    public ListIterator<T> listIterator(int index) {
+        return new ListIterator<>() {
+
+            private Node curr = head;
+            private int currInd = initializeIndex(index);
+
+            private static int initializeIndex(int index) {
+                int someInd = 0;
+                while (someInd < index) {
+                    someInd ++;
+                }
+                return someInd;
+            }
+
+            @Override
+            public boolean hasNext() {
+                return curr != null;
+            }
+
+            @Override
+            public T next() {
+                T data = curr.data;
+                curr = curr.next;
+                currInd++;
+                return data;
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return curr != null;
+            }
+
+            @Override
+            public T previous() {
+                T data = curr.data;
+                curr = curr.prev;
+                currInd--;
+                return data;
+            }
+
+            @Override
+            public int nextIndex() {
+                return currInd + 1;
+            }
+
+            @Override
+            public int previousIndex() {
+                return currInd - 1;
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Unimplemented method 'remove'");
+            }
+
+            @Override
+            public void set(T e) {
+                throw new UnsupportedOperationException("Unimplemented method 'set'");
+            }
+
+            @Override
+            public void add(T e) {
+                throw new UnsupportedOperationException("Unimplemented method 'add'");
+            }
+
+        };
+    }
+
+    public List<T> subList(int fromIndex, int toIndex) {
+        if (fromIndex < 0 || fromIndex >= size || toIndex < 0 || toIndex >= size) {
+            throw new UnsupportedOperationException(
+                    "At least one of 'fromtIndex' and 'toIndex' is out of bounds! Can't produce a sublist.");
+        } else if (fromIndex == toIndex) {
+            return new DoublyLinkedList<>();
+        }
+        DoublyLinkedList<T> ret = new DoublyLinkedList<>();
+        for (int index = fromIndex; index < toIndex; index++) {
+            ret.add(get(index));
+        }
+        return ret;
+    }
+
+    @Override
+    public void addFirst(T e) {
+        if (e == null) {
+            throw new NullPointerException("Cannot remove a null reference from the list.");
+        }
+        addToFront(e);
+    }
+
+    @Override
+    public void addLast(T e) {
+        if (e == null) {
+            throw new NullPointerException("Cannot remove a null reference from the list.");
+        }
+        addToEnd(e);
+    }
+
+    @Override
+    public boolean offerFirst(T e) {
+        if (e == null) {
+            throw new NullPointerException("Cannot remove a null reference from the list.");
+        }
+        addToFront(e);
+        return true;
+    }
+
+    @Override
+    public boolean offerLast(T e) {
+        if (e == null) {
+            throw new NullPointerException("Cannot remove a null reference from the list.");
+        }
+        addToEnd(e);
+        return true;
+    }
+
+    @Override
+    public T pollFirst() {
+        return size == 0 ? null : removeFirst();
+    }
+
+    @Override
+    public T pollLast() {
+        return size == 0 ? null : removeLast();
+    }
+
+    @Override
+    public T peekFirst() {
+        return size == 0 ? null : head.data;
+    }
+
+    @Override
+    public T peekLast() {
+        return size == 0 ? null : tail.data;
+    }
+
+    // needs testing
+    @Override
+    public boolean removeFirstOccurrence(Object o) {
+        if (o == null) {
+            throw new NullPointerException("Cannot remove a null reference from the list.");
+        }
+        if (o.getClass() != head.data.getClass()) {
+            throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
+        }
+        if (size == 0) {
+            return false;
+        }
+        int initialSize = size;
+        remove(o);
+        return size == initialSize;
+    }
+
+    // needs testing
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean removeLastOccurrence(Object o) {
+        if (o == null) {
+            throw new NullPointerException("Cannot remove a null reference from the list.");
+        }
+        if (o.getClass() != head.data.getClass()) {
+            throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
+        }
+        if (size == 0) {
+            return false;
+        }
+        T temp = (T) o;
+        int targIndex = size - 1, initialSize = size;
+        for (Node curr = tail; curr != null && !curr.data.equals(temp); curr = curr.prev) {
+            targIndex --;
+        }
+        if (targIndex == -1) {
+            return false;
+        }
+        remove(targIndex);
+        return initialSize == size;
+    }
+
+    // needs testing
+    @Override
+    public boolean offer(T e) {
+        return add(e);
+    }
+
+    // needs testing
+    @Override
+    public T remove() {
+        if (size == 0) {
+            throw new NoSuchElementException("List is empty; cannot remove elements.");
+        }
+        T data = head.data;
+        if (head.next != null) {
+            head.next.prev = null;
+        }
+        head = head.next;
+        return data;
+    }
+
+    // needs testing
+    @Override
+    public T poll() {
+        return pollFirst();
+    }
+
+    // needs testing
+    @Override
+    public T element() {
+        if (size == 0) {
+            throw new NoSuchElementException("List is empty; cannot remove elements.");
+        }
+        return head.data;
+    }
+
+    // needs testing
+    @Override
+    public T peek() {
+        return size == 0 ? null : head.data;
+    }
+
+    // needs testing
+    @Override
+    public void push(T e) {
+        addFirst(e);
+    }
+
+    // needs testing
+    @Override
+    public T pop() {
+        return removeFirst();
+    }
+
+    // needs testing
+    @Override
+    public Iterator<T> descendingIterator() {
+        return reverseIterator();
     }
 }

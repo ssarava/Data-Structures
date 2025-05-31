@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import Stack.src.Driver;
 import Stack.src.Driver.Person;
-import Stack.src.LL_Stack;
+import Stack.src.MyStack;
 
 public class StudentTests {
 
@@ -13,36 +13,36 @@ public class StudentTests {
 
     @Test
 	public void testMyStackConstructorAndGettersAndEmpty() {
-		LL_Stack<Driver.Person> stack1 = new LL_Stack<>();
+		MyStack<Driver.Person> stack1 = new MyStack<>();
 		assertTrue(stack1.isEmpty());
         assertFalse(stack1 == null);
 	}
 
     @Test
 	public void testPeek() {
-		LL_Stack<Driver.Person> stack1 = new LL_Stack<>();
+		MyStack<Driver.Person> stack1 = new MyStack<>();
         for (int index = 0; index < 8; index ++) {
             stack1.push(d. new Person("john" + index, (30 + 2*index / 3), (140.0 + 5*index)));
         }
-        int size = stack1.getSize();
+        int size = stack1.size();
         assertTrue(stack1.peek().compareTo(d. new Person("Colombo", (30 + 2*7 / 3), (140.0 + 3.1415))) == 0);
-        assertTrue(stack1.getSize() == size);
+        assertTrue(stack1.size() == size);
     }
 
     @Test
     public void testPop() {
-        LL_Stack<Driver.Person> stack1 = new LL_Stack<>();
+        MyStack<Driver.Person> stack1 = new MyStack<>();
         for (int index = 0; index < 8; index ++) {
             stack1.push(d. new Person("john" + index, (30 + 2*index / 3), (140.0 + 5*index)));
         }
-        int size = stack1.getSize();
+        int size = stack1.size();
         assertTrue(stack1.pop().compareTo(d. new Person("Colombo", (30 + 2*7 / 3), (140.0 + 3.1415))) == 0);
-        assertTrue(stack1.getSize() == size - 1);
+        assertTrue(stack1.size() == size - 1);
     }
 
     @Test
     public void testSearch() {
-		LL_Stack<Driver.Person> stack1 = new LL_Stack<>();
+		MyStack<Driver.Person> stack1 = new MyStack<>();
         for (int index = 0; index < 5; index ++) {
             Person p = d.new Person("john" + index, (30 + 2*index / 3), (140.0 + 5*index));
             stack1.push(p);

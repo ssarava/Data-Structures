@@ -17,7 +17,7 @@ public class DLLQueue<T> {
         if (this.size == CAPACITY) {
             System.out.println("Queue is full! Can't add elements.");
         } else {
-            this.queue.addToEnd(element);
+            this.queue.addLast(element);
             this.size ++;
         }
     }

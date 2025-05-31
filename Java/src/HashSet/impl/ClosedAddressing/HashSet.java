@@ -1,28 +1,21 @@
 package HashSet.impl.ClosedAddressing;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import LinkedList.impl.SinglyLinkedList;
 
 /**
  * This immutable class is an implementation of Java's HashSet class.
  * It follows open hashing (closed addressing).
  * A singly-linked-list-like data structure supports separate chaining.
  */
-public class HashSet<T> implements Cloneable, Iterable<T> {
+public class HashSet<T extends Comparable<T>> implements Cloneable, Iterable<T> {
 
+	public static int debug = 0;
 	public static void main(String[] args) {
-		HashSet<String> set1 = new HashSet<>(4);
-
-		for (int ind = 0; ind < 12; ind++) {
-			String s = "hello" + String.valueOf(ind);
-			set1.add(s);
-		}
-		System.out.println(set1);
-
-		Iterator<String> iter = set1.iterator();
-		System.out.println(iter.hasNext());
-		while (iter.hasNext()) {
-			System.out.println(iter.next());
-		}
+	
 
 	}
 
@@ -56,13 +49,14 @@ public class HashSet<T> implements Cloneable, Iterable<T> {
 	 */
 	private int size;
 
-	private HashSet<T>.Node[] hashtable;
+	private Node[] hashtable;
 
 	/**
 	 * Allows for the hashtable to be a chosen size upon initialization
 	 * 
 	 * @param customCapacity
 	 */
+	@SuppressWarnings("unchecked")
 	public HashSet(int customCapacity) {
 		if (customCapacity <= 0) {
 			throw new IllegalArgumentException("Can't initialize a list of length " + customCapacity);
@@ -204,61 +198,26 @@ public class HashSet<T> implements Cloneable, Iterable<T> {
 	}
 	
 
-	// needs work... not working properly
+	@Override
 	public Iterator<T> iterator() {
-		return new Iterator<>() {
+		return toList().iterator();
+	}
 
-			int currBucket = findFirstNonemptyBucket();
-			Node currElement = hashtable[currBucket];
+	// Technically, sets are unordered, so there's no point in reversing one.
+	private Iterator<T> reverse_iterator() {
+		return reverse(toList()).iterator();
+	}
 
-			private int findFirstNonemptyBucket() {
-				int bucket = 0;
-				while (hashtable[bucket] != null && bucket < hashtable.length) {
-					bucket ++;
-				}
-				return bucket;
-			}
-
-			@Override
-			public boolean hasNext() {
-				if (currBucket >= hashtable.length) {
-					return false;
-				}
-				if (currElement.next != null) {
-					return true;
-
-				// find next non-null bucket
-				} else {
-					int tempBucket = currBucket;
-					while (hashtable[tempBucket] != null && tempBucket < hashtable.length) {
-						tempBucket ++;
-					}
-					if (tempBucket == hashtable.length) {
-						return false;
-					} else {
-						return true;
-					}
-				}
-			}
-
-			@Override
-			public T next() {
-				T curr = currElement.value;
-				if (currElement.next == null) {
-					// move on to the next bucket
-					while (hashtable[currBucket] == null) {
-						currBucket ++;
-					}
-					currElement = hashtable[currBucket];
-				} else {
-					currElement = currElement.next;
-				}
-				return curr;
-				// Node datum = hashtable.get(currBucket);
-				// return hashtable.get(currBucket)
-			}
-
-		};
+	private List<T> reverse(List<T> list) {
+		int beg = 0, end = list.size() - 1;
+		while (beg < end) {
+			T temp = list.get(beg);
+			list.set(beg, list.get(end));
+			list.set(end, temp);
+			beg ++;
+			end --;
+		}
+		return list;
 	}
 
 	private void rehash() {
@@ -290,6 +249,22 @@ public class HashSet<T> implements Cloneable, Iterable<T> {
 
 		}
 		hashtable = newTable;
+	}
+
+	/**
+	 * Creates a new list consisting of the set's elements
+	 * @param set
+	 * @return
+	 */
+	public List<T> toList() {
+		List<T> ret = new LinkedList<>();
+		for (int index = 0; index < hashtable.length; index++) {
+
+			for (Node curr = hashtable[index]; curr != null; curr = curr.next) {
+				ret.add(curr.value);
+			}
+		}
+		return ret;
 	}
 
 	@Override

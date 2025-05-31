@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "HashSet",
+            "request": "launch",
+            "mainClass": "HashSet.impl.ClosedAddressing.HashSet",
+            "projectName": "Data Structures_59df2d8"
+        },
+        {
+            "type": "java",
             "name": "BloomFilter",
             "request": "launch",
             "mainClass": "BloomFilter.impl.BloomFilter",

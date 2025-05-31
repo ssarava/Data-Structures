@@ -36,13 +36,13 @@ public class Driver {
     public static void main(String[] args) {
         Driver d = new Driver();
         
-        LL_Stack<Integer> stack1 = new LL_Stack<>();
+        MyStack<Integer> stack1 = new MyStack<>();
         for (int index = 0; index < 5; index ++) {
             stack1.push(index);
         }
         System.out.println(stack1.toString() + "\n");
 
-        LL_Stack<Person> people = new LL_Stack<>();
+        MyStack<Person> people = new MyStack<>();
         
         for (int index = 0; index < 5; index ++) {
             Person p = d.new Person("john" + index, (30 + 2*index / 3), (140.0 + 5*index));
