@@ -352,7 +352,7 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
     @SuppressWarnings({ "unchecked", "hiding" })
     public <T> T[] toArray(T[] a) {
         // make 'a' larger if it's smaller than this list
-        if (a.length < size) {
+        if (a.length != size) {
             a = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
         }
         Object[] pointer = a; // needed to resolve compiler type conversion conflict
@@ -363,9 +363,9 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
 
         // set first element immediately following the last element to null (useful for
         // determining size of the list since no null elements are allowed in the list)
-        if (a.length > size) {
-            a[size] = null;
-        }
+        // if (a.length > size) {
+        //     a[size] = null;
+        // }
         return a;
     }
 

@@ -107,18 +107,18 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
      * are no conditions
      * needed for this method to be invoked.
      */
-    public void removeAllInstances(Object targetData) {
-        if (targetData == null) {
+    public void removeAllInstances(Object o) {
+        if (o == null) {
             return;
         }
-        if (targetData.getClass() != head.data.getClass()) {
-            throw new ClassCastException(targetData.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
+        if (!head.data.getClass().isAssignableFrom(o.getClass())) {
+            throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
         }
         Node curr = head, tempHead = head;
         boolean nonTargetNode = false;
 
         while (curr != null) {
-            if (curr.data.equals(targetData)) {
+            if (curr.data.equals(o)) {
                 if (!nonTargetNode) {
                     if (head == curr) {
                         head = curr.next;
@@ -444,8 +444,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
     // needs testing
     @SuppressWarnings({ "unchecked", "hiding" })
     public <T> T[] toArray(T[] a) {
-        // make 'a' larger if it's smaller than this list
-        if (a.length < size) {
+        if (a.length != size) {
             a = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
         }
         Object[] pointer = a; // needed to resolve compiler type conversion conflict
@@ -455,9 +454,9 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         }
 
         // set first element immediately following the last element to null (useful for determining size of the list since no null elements are allowed in the list)
-        if (a.length > size) {
-            a[size] = null; 
-        }
+        // if (a.length > size) {
+        //     a[size] = null; 
+        // }
         return a;
     }
 
@@ -465,9 +464,6 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
     public boolean add(T element) {
         if (element == null) {
             throw new NullPointerException("Cannot add a null reference to the list.");
-        }
-        if (element.getClass() != head.data.getClass()) {
-            throw new ClassCastException(element.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
         }
         add(size + 1, element);
         return true;
@@ -478,7 +474,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         if (o == null) {
             throw new NullPointerException("Cannot remove a null reference from the list.");
         }
-        if (o.getClass() != head.data.getClass()) {
+        if (!head.data.getClass().isAssignableFrom(o.getClass())) {
             throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
         }
         if (size == 0) {
@@ -761,7 +757,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         if (o == null) {
             throw new NullPointerException("Cannot remove a null reference from the list.");
         }
-        if (o.getClass() != head.data.getClass()) {
+        if (!head.data.getClass().isAssignableFrom(o.getClass())) {
             throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
         }
         if (size == 0) {
@@ -777,7 +773,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         if (o == null) {
             throw new NullPointerException("Cannot remove a null reference from the list.");
         }
-        if (o.getClass() != head.data.getClass()) {
+        if (!head.data.getClass().isAssignableFrom(o.getClass())) {
             throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
         }
         if (size == 0) {

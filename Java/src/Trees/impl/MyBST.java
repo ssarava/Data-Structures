@@ -1,20 +1,27 @@
 package Trees.impl;
 
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Stack;
+
+import LinkedList.impl.DoublyLinkedList;
+import LinkedList.impl.SinglyLinkedList;
+import Stack.src.MyStack;
+import Trees.Tree;
 
 /**
  * This implementation of a Binary Search Tree assumes that all elements are unique.
  * Methods include {@link #add(value)}, {@link #remove(value)}, {@link #search(value)},
  * {@link #min()}, and {@link #max()}. Traversals include {@link #bfs()}, {@link #dfs()}.
  */
-public class MyBST<T extends Comparable<T>> implements Iterable<T> {
+public class MyBST<T extends Comparable<T>> implements Tree<T> {
 
     public static void main(String[] args) {
         MyBST<Integer> tree1 = new MyBST<>();
+        
         tree1.insert(40);
         tree1.insert(20);
         tree1.insert(60);
@@ -27,11 +34,11 @@ public class MyBST<T extends Comparable<T>> implements Iterable<T> {
 
         // tree1.preorder_flatten();
         // System.out.println(tree1);
-        Iterator<Integer> iter = tree1.postorderIterator();
-        while (iter.hasNext()) {
-            System.out.print(iter.next() + " ");
-        }
-        System.out.println();
+        // Iterator<Integer> iter = tree1.postorderIterator();
+        // while (iter.hasNext()) {
+        //     System.out.print(iter.next() + " ");
+        // }
+        // System.out.println();
     }
     
     private class Node {
@@ -75,8 +82,16 @@ public class MyBST<T extends Comparable<T>> implements Iterable<T> {
         this.root = insertHelper(root, key);
     }
 
-    public boolean contains(T key) {
+    @SuppressWarnings("unchecked")
+    public boolean contains(Object o) {
+        if (o == null) {
+            throw new NullPointerException("Cannot add a null reference to the list.");
+        }
+        if (!root.key.getClass().isAssignableFrom(o.getClass())) {
+            throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + root.key.getClass().getName());
+        }
         Node curr = this.root;
+        T key = (T) o;
         while (curr != null) {
             if (curr.key.compareTo(key) < 0) {
                 // go right
@@ -106,18 +121,25 @@ public class MyBST<T extends Comparable<T>> implements Iterable<T> {
         return root;
     }
 
-    public void delete(T element) {
+    public boolean delete(Object element) {
+        if (!contains(element)) {
+            return false;
+        }
         root = delete_helper(root, element);
+        size --;
+        return true;
     }
 
-    public Node delete_helper(Node root, T element) {
+    @SuppressWarnings("unchecked")
+	public Node delete_helper(Node root, Object element) {
         if (root == null) {
             return root;
         }
-        if (root.key.compareTo(element) < 0) {
+        T temp = (T) element;
+        if (root.key.compareTo(temp) < 0) {
             // go right
             root.right = delete_helper(root.right, element);
-        } else if (root.key.compareTo(element) > 0) {
+        } else if (root.key.compareTo(temp) > 0) {
             // go left
             root.left = delete_helper(root.left, element);
 
@@ -152,7 +174,7 @@ public class MyBST<T extends Comparable<T>> implements Iterable<T> {
     }
 
     public List<T> getLeaves() {
-        List<T> acc = new LinkedList<>();
+        List<T> acc = new SinglyLinkedList<>();
         getLeavesHelper(root, acc);
         return acc;
     }
@@ -241,7 +263,7 @@ public class MyBST<T extends Comparable<T>> implements Iterable<T> {
      *  Flattens the tree into a LinkedList, in place, following a pre-order traversal.
      */
     // private void initial_flatten() {
-    //     List<Node> inorder = new LinkedList<>();
+    //     List<Node> inorder = new SinglyLinkedList<>();
     //     flatten_helper(root, inorder);
     //     for (Node node: inorder) {
     //         node.left = null;
@@ -261,8 +283,11 @@ public class MyBST<T extends Comparable<T>> implements Iterable<T> {
     //     }
     // }
 
+     /**
+     *  Returns a List containing this Tree's elements in sorted order.
+     */
     public List<T> inorder() {
-        List<T> inorder = new LinkedList<>();
+        List<T> inorder = new SinglyLinkedList<>();
         inorder_helper(root, inorder);
         return inorder;
     }
@@ -276,7 +301,7 @@ public class MyBST<T extends Comparable<T>> implements Iterable<T> {
     }
 
     public List<T> preorder() {
-        List<T> preorder = new LinkedList<>();
+        List<T> preorder = new SinglyLinkedList<>();
         preorder_helper(root, preorder);
         return preorder;
     }
@@ -290,7 +315,7 @@ public class MyBST<T extends Comparable<T>> implements Iterable<T> {
     }
     
     public List<T> postorder() {
-        List<T> postorder = new LinkedList<>();
+        List<T> postorder = new SinglyLinkedList<>();
         postorder_helper(root, postorder);
         return postorder;
     }
@@ -304,8 +329,8 @@ public class MyBST<T extends Comparable<T>> implements Iterable<T> {
     }
 
     public List<T> dfs() {
-        List<T> acc = new LinkedList<>();
-        Stack<Node> stack = new Stack<>();
+        List<T> acc = new SinglyLinkedList<>();
+        MyStack<Node> stack = new MyStack<>();
         stack.push(this.root);
         while (!stack.isEmpty()) {
             Node curr = stack.pop();
@@ -321,8 +346,8 @@ public class MyBST<T extends Comparable<T>> implements Iterable<T> {
     }
 
     public List<T> bfs() {
-        List<T> acc = new LinkedList<>();
-        Queue<Node> queue = new LinkedList<>();
+        List<T> acc = new SinglyLinkedList<>();
+        Queue<Node> queue = new SinglyLinkedList<>();
         queue.add(root);
         while (!queue.isEmpty()) {
             Node curr = queue.remove();
@@ -378,5 +403,109 @@ public class MyBST<T extends Comparable<T>> implements Iterable<T> {
         return indent + "k: " + node.key + "\n" + indent + "l:" + (node.left == null ? " null" : "\n") + 
         toStringHelper(node.left, indent + "    ") + "\n" + indent + "r:" + 
         (node.right == null ? " null" : "\n") + toStringHelper(node.right, indent + "    ");
+    }
+
+    @Override
+    public int size() {
+        return size;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    @Override
+    public Object[] toArray() {
+        Iterator<T> iter = iterator();
+        int index = 0;
+        Object[] arr = new Object[size];
+        while (iter.hasNext()) {
+            arr[index ++] = iter.next();
+        }
+        return arr;
+    }
+
+    @SuppressWarnings({ "unchecked", "hiding" })
+    @Override
+    public <T> T[] toArray(T[] a) {
+        if (a.length != size) {
+            a = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+        }
+        Object[] pointer = a; // needed to resolve compiler type conversion conflict
+        Iterator<T> iter = (Iterator<T>) iterator();
+        int index = 0;
+        while (iter.hasNext()) {
+            pointer[index ++] = iter.next();
+        }
+        return a;
+    }
+
+    @Override
+    public boolean add(T e) {
+        if (!contains(e)) {
+            return false;
+        }
+        insert(e);
+        return true;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        return delete(o);
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends T> c) {
+        if (c == null) {
+            throw new NullPointerException("Cannot add a null reference to the list.");
+        }
+        if (this == c) {
+            throw new ConcurrentModificationException("Adding elements to this list, from this list, isn't allowed.");
+        }
+        int initialSize = size;
+        for (T element : c) {
+            insert(element);
+        }
+        return size == initialSize;
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        if (c == null) {
+            throw new NullPointerException("Cannot access elements given a null reference.");
+        }
+        if (this == c) {
+            throw new ConcurrentModificationException("Adding elements to this list, from this list, isn't allowed.");
+        }
+        int initialSize = size;
+        for (Object element : c) {
+            remove(element);
+        }
+        return size == initialSize;
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        if (this == c) {
+            return false;
+        }
+        int initialSize = 0;
+        List<T> toRemove = new DoublyLinkedList<>();
+        for (T element: this) {
+            if (!c.contains(element)) {
+                toRemove.add(element);
+            }
+        }
+        for (T element: toRemove) {
+            remove(element);
+        }
+        return size == initialSize;
+    }
+
+    @Override
+    public void clear() {
+        root = null;
+        size = 0;
     }
 }

@@ -6,9 +6,6 @@ import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.EmptyStackException;
 import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.RandomAccess;
 
 /**
  * The implementation of a stack backed by a singly linked list, which is also
@@ -67,6 +64,10 @@ public class MyStack<T> implements Collection<T>, Cloneable {
         return curr.data;
     }
 
+    /**
+     * Adds data to the top of the stack. Same functionality as {@code add(T data)}.
+     * @param data
+     */
     public void push(T data) {
         Node node = new Node(data);
         if (size == 0) {
@@ -174,6 +175,7 @@ public class MyStack<T> implements Collection<T>, Cloneable {
     // ---------------------- I implemented these for fun/practice, and used only standard stack operations ---------------------- //
     // -------------------------------------------------------------------------------------------------------------------------- //
     
+    // needs testing
     public Object[] toArray() {
         Object[] arr = new Object[size];
         int index = 0;
@@ -183,12 +185,29 @@ public class MyStack<T> implements Collection<T>, Cloneable {
         return arr;
     }
 
+    // needs testing
+    @SuppressWarnings({ "unchecked", "hiding" })
     public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException("unimplemented... this is a waste of time");
+        // make 'a' larger if it's smaller than this list
+        if (a.length != size) {
+            a = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+        }
+        Object[] pointer = a; // needed to resolve compiler type conversion conflict
+        int index = 0;
+        for (Node curr = head; curr != null; curr = curr.next) {
+            pointer[index++] = curr.data;
+        }
+
+        // set first element immediately following the last element to null (useful for determining size of the list since no null elements are allowed in the list)
+        // if (a.length > size) {
+        //     a[size] = null; 
+        // }
+        return a;
     }
 
     public boolean add(T e) {
-        throw new UnsupportedOperationException("Don't add, just push!");
+        push(e);
+        return true;
     }
 
     public boolean remove(Object o) {
@@ -279,7 +298,7 @@ public class MyStack<T> implements Collection<T>, Cloneable {
     // ---------------------- I implemented these for fun/practice, and used only standard stack operations ---------------------- //
     // -------------------------------------------------------------------------------------------------------------------------- //
 
-    private boolean addAll(int index, Collection<? extends T> c) {
+    protected boolean addAll(int index, Collection<? extends T> c) {
         if (c == null) {
             throw new NullPointerException("Cannot add a null reference to the list.");
         }
@@ -303,7 +322,7 @@ public class MyStack<T> implements Collection<T>, Cloneable {
         return size == initialSize;
     }
 
-    private T set(int index, T element) {
+    protected T set(int index, T element) {
         if (element == null) {
             throw new NullPointerException("Cannot replace a value with a null reference.");
         }
@@ -322,7 +341,7 @@ public class MyStack<T> implements Collection<T>, Cloneable {
         return popped;
     }
 
-    private void add(int index, T element) {
+    protected void add(int index, T element) {
         if (element == null) {
             throw new NullPointerException("Cannot replace a value with a null reference.");
         }
@@ -339,13 +358,15 @@ public class MyStack<T> implements Collection<T>, Cloneable {
         }
     }
 
-    // removes the element at the 0-based index of the first occurrence of the argument, or -1 if it doesn't exist
-    private T remove(int index) {
+    /**
+     * Removes the element at the 0-based index of the first occurrence of the argument, or -1 if it doesn't exist
+     */
+    // needs testing
+    protected T remove(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index out of bounds!");
         }
         MyStack<T> temp = new MyStack<>();
-        int initialSize = size;
         for (int ind = 0; ind < index; ind ++) {
             temp.push(pop());
         }
@@ -356,8 +377,11 @@ public class MyStack<T> implements Collection<T>, Cloneable {
         return popped;
     }
 
-    // returns the 0-based index of the first occurrence of the argument, or -1 if it doesn't exist
-    private int indexOf(Object o) {
+    /**
+     * Returns the 0-based index of the first occurrence of the argument, or -1 if it doesn't exist
+     */
+    // needs testing
+    protected int indexOf(Object o) {
         if (!contains(o)) {
             return -1;
         }
@@ -372,7 +396,8 @@ public class MyStack<T> implements Collection<T>, Cloneable {
         return index;
     }
 
-    private int lastIndexOf(Object o) {
+    // needs testing
+    protected int lastIndexOf(Object o) {
         if (!contains(o)) {
             return -1;
         }
