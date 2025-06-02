@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -48,6 +49,10 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
         size = 0;
     }
 
+    public SinglyLinkedList(Collection<? extends T> c) {
+        addAll(c);
+    }
+
     public int size() {
         return size;
     }
@@ -61,6 +66,28 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
             return false;
         }
         @SuppressWarnings("unchecked")
+        SinglyLinkedList<T> temp = (SinglyLinkedList<T>) other;
+        Node curr1 = head, curr2 = temp.head;
+        while (curr1 != null && curr2 != null) {
+            if (!curr1.data.equals(curr2.data)) {
+                return false;
+            }
+            curr1 = curr1.next;
+            curr2 = curr2.next;
+
+            // unequal lengths
+            if ((curr1 == null && curr2 != null) || (curr1 != null && curr2 == null)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // used for testing
+    public boolean equals(List<T> other) {
+        if (this == other) {
+            return true;
+        }
         SinglyLinkedList<T> temp = (SinglyLinkedList<T>) other;
         Node curr1 = head, curr2 = temp.head;
         while (curr1 != null && curr2 != null) {
@@ -121,19 +148,19 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
      * are no conditions
      * needed for this method to be invoked.
      */
-    public void removeAllInstances(Object targetData) {
-        if (targetData == null) {
+    public void removeAllInstances(Object o) {
+        if (o == null) {
             return;
         }
-        if (targetData.getClass() != head.data.getClass()) {
-            throw new ClassCastException(targetData.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
+        if (!head.data.getClass().isAssignableFrom(o.getClass())) {
+            throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
         }
 
         Node curr = head, tempHead = head;
         boolean nonTargetNode = false;
 
         while (curr != null) {
-            if (curr.data.equals(targetData)) {
+            if (curr.data.equals(o)) {
                 if (!nonTargetNode) {
                     if (head == curr) {
                         head = curr.next;
@@ -196,7 +223,7 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
     @Override
     public String toString() {
         if (isEmpty()) {
-            return null;
+            return "";
         }
         String s = "";
 
@@ -249,17 +276,18 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
         return lastIndex;
     }
 
+    @Override
     public T set(int index, T element) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException();
         }
         int currIndex = 0;
         Node curr = head;
-        while (curr != null) {
+        while (currIndex < index && curr != null) {
             curr = curr.next;
-            if (currIndex + 1 == index) {
-                break;
-            }
+            // if (currIndex + 1 == index) {
+            //     break;
+            // }
             currIndex++;
         }
         T prevElement = curr.data;
@@ -296,6 +324,7 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
     }
 
     // probably needs work and testing
+    @Override
     public void add(int index, T element) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Can't insert at index " + index + " because it's out of bounds!");
@@ -304,11 +333,16 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
             throw new NullPointerException("Cannot add a null reference to the list.");
         }
         Node node = new Node(element);
-        if (index == 0) {
+        if (size == 0) {
+            head = node;
+            tail = node;
+        } else if (index == 0) {
             node.next = head;
             head = node;
         } else if (index == size) {
-            tail.next = node;
+            if (tail != null) {
+                tail.next = node;
+            }
             tail = node;
         } else {
             Node curr = head;
@@ -380,9 +414,8 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
         if (o == null) {
             throw new NullPointerException("Cannot remove a null reference from the list.");
         }
-        if (o.getClass() != head.data.getClass()) {
-            throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type "
-                    + head.data.getClass().getName());
+        if (!head.data.getClass().isAssignableFrom(o.getClass())) {
+            throw new ClassCastException(o.getClass().getName() + " is not compatible with a list of type " + head.data.getClass().getName());
         }
         if (size == 0) {
             return false;
@@ -419,7 +452,7 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
         }
         int initialSize = size;
         for (T e : c) {
-            add(size + 1, e);
+            add(size, e);
         }
         return size == initialSize;
     }
@@ -638,6 +671,11 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
         return ret;
     }
 
+    // used strictly for testing, at least until the ListIterator<T> method is implemented
+    public static SinglyLinkedList<Integer> toJavaNativeList(List<Integer> list) {
+        return new SinglyLinkedList<>(list);
+    }
+
     // needs testing
     public void addFirst(T e) {
         add(0, e);
@@ -681,9 +719,8 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
         if (o == null) {
             throw new NullPointerException("Cannot remove a null reference from the list.");
         }
-        if (o.getClass() != head.data.getClass()) {
-            throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type "
-                    + head.data.getClass().getName());
+        if (!head.data.getClass().isAssignableFrom(o.getClass())) {
+            throw new ClassCastException(o.getClass().getName() + " is not compatible with a list of type " + head.data.getClass().getName());
         }
         if (size == 0) {
             return false;
@@ -698,9 +735,8 @@ public class SinglyLinkedList<T> implements List<T>, Queue<T>, Cloneable {
         if (o == null) {
             throw new NullPointerException("Cannot remove a null reference from the list.");
         }
-        if (o.getClass() != head.data.getClass()) {
-            throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type "
-                    + head.data.getClass().getName());
+        if (!head.data.getClass().isAssignableFrom(o.getClass())) {
+            throw new ClassCastException(o.getClass().getName() + " is not compatible with a list of type " + head.data.getClass().getName());
         }
         if (size == 0) {
             return false;

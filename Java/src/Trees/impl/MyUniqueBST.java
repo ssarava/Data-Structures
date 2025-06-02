@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
@@ -12,6 +13,7 @@ import LinkedList.impl.DoublyLinkedList;
 import LinkedList.impl.SinglyLinkedList;
 import Stack.src.MyStack;
 import Trees.MyTree;
+
 /**
  * My implementation of a binary search tree that does not support duplicates.
  * Some flattening/unflattening methods need to be implemented
@@ -19,42 +21,34 @@ import Trees.MyTree;
 public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
 
     public static void main(String[] args) {
-        MyUniqueBST<Integer> tree1 = new MyUniqueBST<>();
-        
-        tree1.insert(40);
-        tree1.insert(20);
-        tree1.insert(60);
-        tree1.insert(10);
-        tree1.insert(30);
-        tree1.insert(50);
-        tree1.insert(70);
-        // System.out.println(tree1);
-        // tree1.delete(40);
+        MyUniqueBST<Integer> tree = new MyUniqueBST<>();
 
-        // tree1.preorder_flatten();
-        // System.out.println(tree1);
-        // Iterator<Integer> iter = tree1.postorderIterator();
-        // while (iter.hasNext()) {
-        //     System.out.print(iter.next() + " ");
-        // }
-        // System.out.println();
+        tree.insert(40);
+        // System.out.println(tree);
+        tree.insert(20);
+        tree.insert(60);
+        tree.insert(10);
+        tree.insert(30);
+        tree.insert(50);
+        tree.insert(70);
+        System.out.println(tree.inorder());
     }
-    
-    private class Node {
 
-        private T key;
-        private Node left, right;
+    protected class BSTNode {
 
-        private Node(T keyIn) {
-            this.key = keyIn;
-            this.left = null;
-            this.right = null;
+        protected T key;
+        protected BSTNode left, right;
+
+        protected BSTNode(T keyIn) {
+            key = keyIn;
+            left = null;
+            right = null;
         }
 
-        private Node(Node other) {
-            this.key = other.key;
-            this.left = other.left;
-            this.right = other.right;
+        protected BSTNode(BSTNode other) {
+            key = other.key;
+            left = other.left;
+            right = other.right;
         }
 
         @Override
@@ -62,40 +56,67 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
             if (this == other) {
                 return true;
             }
+            if (!(other instanceof MyUniqueBST.BSTNode)) {
+                return false;
+            }
             @SuppressWarnings("unchecked")
-            Node temp = (Node) other;
+            BSTNode temp = (BSTNode) other;
             return key.compareTo(temp.key) == 0;
         }
+
+        @Override
+        public String toString() {
+            return toStringHelper(this, "");
+        }
+
+        private String toStringHelper(BSTNode node, String indent) {
+            if (node == null) {
+                return "";
+            }
+            return indent + "k: " + node.key + "\n" + indent + "l:" + (node.left == null ? " null" : "\n") +
+                    toStringHelper(node.left, indent + "    ") + "\n" + indent + "r:" +
+                    (node.right == null ? " null" : "\n") + toStringHelper(node.right, indent + "    ");
+        }
     }
 
-    public Node root;
-    private int size;
+    protected BSTNode root;
+    protected int size;
 
     public MyUniqueBST() {
-        this.root = null;
-        this.size = 0;
+        root = null;
+        size = 0;
     }
 
-    public void insert(T key) {
-        this.size ++;
-        this.root = insertHelper(root, key);
+    @Override
+    public boolean insert(T key) {
+        if (!contains(key)) {
+            root = insertHelper(root, key);
+            size++;
+            return true;
+        }
+        return false;
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public boolean contains(Object o) {
         if (o == null) {
-            throw new NullPointerException("Cannot add a null reference to the list.");
+            throw new NullPointerException("Cannot add a null reference to the tree.");
+        }
+        if (root == null) {
+            return false;
         }
         if (!root.key.getClass().isAssignableFrom(o.getClass())) {
-            throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + root.key.getClass().getName());
+            throw new ClassCastException(o.getClass().getName() + " is not compatible with a tree of type "
+                    + root.key.getClass().getName());
         }
-        Node curr = this.root;
-        T key = (T) o;
+        BSTNode curr = root;
         while (curr != null) {
-            if (curr.key.compareTo(key) < 0) {
+            @SuppressWarnings("unchecked")
+            int result = curr.key.compareTo((T) o);
+            if (result < 0) {
                 // go right
                 curr = curr.right;
-            } else if (curr.key.compareTo(key) > 0) {
+            } else if (result > 0) {
                 // go left
                 curr = curr.left;
             } else {
@@ -105,9 +126,9 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
         return false;
     }
 
-    private Node insertHelper(Node root, T toAdd) {
+    private BSTNode insertHelper(BSTNode root, T toAdd) {
         if (root == null) {
-            return new Node(toAdd);
+            return new BSTNode(toAdd);
         }
         int result = root.key.compareTo(toAdd);
         if (result < 0) {
@@ -120,17 +141,18 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
         return root;
     }
 
+    @Override
     public boolean delete(Object element) {
         if (!contains(element)) {
             return false;
         }
         root = delete_helper(root, element);
-        size --;
+        size--;
         return true;
     }
 
     @SuppressWarnings("unchecked")
-	public Node delete_helper(Node root, Object element) {
+    private BSTNode delete_helper(BSTNode root, Object element) {
         if (root == null) {
             return root;
         }
@@ -142,9 +164,9 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
             // go left
             root.left = delete_helper(root.left, element);
 
-        // if root is found
+            // if root is found
         } else {
-            
+
             // only right child is present OR no children are present
             if (root.left == null) {
                 return root.right;
@@ -163,11 +185,11 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
         return root;
     }
 
-    private T inorderSuccessor(Node node) {
+    private T inorderSuccessor(BSTNode node) {
         if (size == 0) {
             return null;
         }
-        Node curr = node.right;
+        BSTNode curr = node.right;
         // go right once, then left as far as possible
         while (curr != null && curr.left != null) {
             curr = curr.left;
@@ -181,7 +203,7 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
         return acc;
     }
 
-    public void getLeavesHelper(Node root, List<T> acc) {
+    public void getLeavesHelper(BSTNode root, List<T> acc) {
         if (root != null) {
             if (root.left == null && root.right == null) {
                 acc.add(root.key);
@@ -195,7 +217,7 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
         return isLeafHelper(root, key);
     }
 
-    private boolean isLeafHelper(Node root, T key) {
+    private boolean isLeafHelper(BSTNode root, T key) {
         if (root == null) {
             return false;
         }
@@ -206,13 +228,14 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
     }
 
     /**
-     *  Flattens the tree into a LinkedList, in place, following a pre-order traversal.
+     * Flattens the tree into a LinkedList, in place, following a pre-order
+     * traversal.
      */
     public void preorder_flatten() {
-        Node curr = root;
+        BSTNode curr = root;
         while (curr != null) {
             if (curr.left != null) {
-                Node predecessor = curr.left;
+                BSTNode predecessor = curr.left;
                 while (predecessor.right != null) {
                     predecessor = predecessor.right;
                 }
@@ -225,7 +248,8 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
     }
 
     /**
-     *  Unflattens the LinkedList-like tree, in place, following an pre-order traversal.
+     * Unflattens the LinkedList-like tree, in place, following an pre-order
+     * traversal.
      */
     public void preorder_unflatten() {
         // TODO
@@ -233,28 +257,26 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
     }
 
     /**
-     *  Flattens the tree into a LinkedList, in place, following an in-order traversal. incomplete
+     * Flattens the tree into a LinkedList, in place, following an inorder
+     * traversal. incomplete
      */
     public void inorder_flatten() {
         // TODO
-        // throw new UnsupportedOperationException("Unimplemented!");
-        Node curr = root;
-        while (curr != null) {
-            if (curr.right != null) {
-                Node successor = curr.right;
-                while (successor.left != null) {
-                    successor = successor.right;
-                }
-                curr.right = curr.right;
-                curr.right = curr.left;
-                curr.left = null;
-            }
-            curr = curr.right;
-        }
+        throw new UnsupportedOperationException("Unimplemented!");
     }
 
     /**
-     *  Flattens the tree into a LinkedList, in place, following a post-order traversal.
+     * Unflattens the LinkedList-like tree, in place, following an inorder
+     * traversal.
+     */
+    public void inorder_unflatten() {
+        // TODO
+        throw new UnsupportedOperationException("Unimplemented!");
+    }
+
+    /**
+     * Flattens the tree into a LinkedList, in place, following a post-order
+     * traversal.
      */
     public void postorder_flatten() {
         // TODO
@@ -262,80 +284,84 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
     }
 
     /**
-     *  Flattens the tree into a LinkedList, in place, following a pre-order traversal.
+     * Unflattens the LinkedList-like tree, in place, following an post-order
+     * traversal.
      */
-    // private void initial_flatten() {
-    //     List<Node> inorder = new SinglyLinkedList<>();
-    //     flatten_helper(root, inorder);
-    //     for (Node node: inorder) {
-    //         node.left = null;
-    //         node.right = null;
-    //     }
-    //     for (int index = 0; index < inorder.size() - 1; index ++) {
-    //         inorder.get(index).right = inorder.get(index + 1);
-    //     }
-    //     root = inorder.get(0);
-    // }
+    public void postorder_unflatten() {
+        // TODO
+    }
 
-    // private void flatten_helper(Node root, List<Node> acc) {
-    //     if (root != null) {
-    //         acc.add(root);
-    //         flatten_helper(root.left, acc);
-    //         flatten_helper(root.right, acc);
-    //     }
-    // }
+    /**
+     * Returns a List containing this Tree's elements following a preorder
+     * traversal.
+     */
+    public List<T> preorder() {
+        return preorderHelper(root, new SinglyLinkedList<>());
+    }
 
-     /**
-     *  Returns a List containing this Tree's elements in sorted order.
+    private List<T> preorderHelper(BSTNode root, List<T> acc) {
+        if (root != null) {
+            acc.add(root.key);
+            preorderHelper(root.left, acc);
+            preorderHelper(root.right, acc);
+        }
+        return acc;
+    }
+
+    /**
+     * Returns a List containing this Tree's elements in sorted order.
      */
     public List<T> inorder() {
-        List<T> inorder = new SinglyLinkedList<>();
-        inorder_helper(root, inorder);
-        return inorder;
+        return inorderHelper(root, new SinglyLinkedList<>());
     }
 
-    private void inorder_helper(Node root, List<T> acc) {
+    private List<T> inorderHelper(BSTNode root, List<T> acc) {
         if (root != null) {
-            inorder_helper(root.left, acc);
+            inorderHelper(root.left, acc);
             acc.add(root.key);
-            inorder_helper(root.right, acc);
+            inorderHelper(root.right, acc);
         }
+        return acc;
     }
 
-    public List<T> preorder() {
-        List<T> preorder = new SinglyLinkedList<>();
-        preorder_helper(root, preorder);
-        return preorder;
+    // used strictly for testing
+    public LinkedList<T> inorderJavaNative(String s) {
+        return inorderHelper("", root, new LinkedList<>());
     }
 
-    private void preorder_helper(Node root, List<T> acc) {
+    // used strictly for testing
+    private LinkedList<T> inorderHelper(String s, BSTNode root, LinkedList<T> acc) {
         if (root != null) {
+            inorderHelper(root.left, acc);
             acc.add(root.key);
-            preorder_helper(root.left, acc);
-            preorder_helper(root.right, acc);
+            inorderHelper(root.right, acc);
         }
+        return acc;
     }
-    
+
+    /**
+     * Returns a List containing this Tree's elements following a postorder
+     * traversal.
+     */
     public List<T> postorder() {
-        List<T> postorder = new SinglyLinkedList<>();
-        postorder_helper(root, postorder);
-        return postorder;
+        return postorderHelper(root, new SinglyLinkedList<>());
     }
 
-    private void postorder_helper(Node root, List<T> acc) {
+    private List<T> postorderHelper(BSTNode root, List<T> acc) {
         if (root != null) {
-            postorder_helper(root.left, acc);
-            postorder_helper(root.right, acc);
+            postorderHelper(root.left, acc);
+            postorderHelper(root.right, acc);
             acc.add(root.key);
         }
+        return acc;
     }
 
     public List<T> dfs() {
         List<T> acc = new SinglyLinkedList<>();
-        MyStack<Node> stack = new MyStack<>();
-        stack.push(this.root);
+        MyStack<BSTNode> stack = new MyStack<>();
+        stack.push(root);
         while (!stack.isEmpty()) {
-            Node curr = stack.pop();
+            BSTNode curr = stack.pop();
             acc.add(curr.key);
             if (curr.left != null) {
                 stack.push(curr.left);
@@ -349,10 +375,10 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
 
     public List<T> bfs() {
         List<T> acc = new SinglyLinkedList<>();
-        Queue<Node> queue = new SinglyLinkedList<>();
+        Queue<BSTNode> queue = new SinglyLinkedList<>();
         queue.add(root);
         while (!queue.isEmpty()) {
-            Node curr = queue.remove();
+            BSTNode curr = queue.remove();
             acc.add(curr.key);
             if (curr.left != null) {
                 queue.add(curr.left);
@@ -366,14 +392,13 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
 
     public void levelorderTraversal() {
         System.out.println(bfs());
-    }   
+    }
 
     /**
      * @return a preorder iterator
      */
     public Iterator<T> preorderIterator() {
-        List<T> list = preorder();
-        return list.iterator();
+        return preorder().iterator();
     }
 
     /**
@@ -381,16 +406,14 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
      */
     @Override
     public Iterator<T> iterator() {
-        List<T> list = inorder();
-        return list.iterator();
+        return inorder().iterator();
     }
 
     /**
      * @return a postorder iterator
      */
     public Iterator<T> postorderIterator() {
-        List<T> list = postorder();
-        return list.iterator();
+        return postorder().iterator();
     }
 
     @Override
@@ -398,13 +421,13 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
         return toStringHelper(root, "");
     }
 
-    private String toStringHelper(Node node, String indent) {
+    private String toStringHelper(BSTNode node, String indent) {
         if (node == null) {
             return "";
         }
-        return indent + "k: " + node.key + "\n" + indent + "l:" + (node.left == null ? " null" : "\n") + 
-        toStringHelper(node.left, indent + "    ") + "\n" + indent + "r:" + 
-        (node.right == null ? " null" : "\n") + toStringHelper(node.right, indent + "    ");
+        return indent + "k: " + node.key + "\n" + indent + "l:" + (node.left == null ? " null" : "\n") +
+                toStringHelper(node.left, indent + "    ") + "\n" + indent + "r:" +
+                (node.right == null ? " null" : "\n") + toStringHelper(node.right, indent + "    ");
     }
 
     @Override
@@ -423,7 +446,7 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
         int index = 0;
         Object[] arr = new Object[size];
         while (iter.hasNext()) {
-            arr[index ++] = iter.next();
+            arr[index++] = iter.next();
         }
         return arr;
     }
@@ -438,16 +461,13 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
         Iterator<T> iter = (Iterator<T>) iterator();
         int index = 0;
         while (iter.hasNext()) {
-            pointer[index ++] = iter.next();
+            pointer[index++] = iter.next();
         }
         return a;
     }
 
     @Override
     public boolean add(T e) {
-        if (!contains(e)) {
-            return false;
-        }
         insert(e);
         return true;
     }
@@ -467,7 +487,7 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
         }
         int initialSize = size;
         for (T element : c) {
-            insert(element);
+            add(element);
         }
         return size == initialSize;
     }
@@ -489,12 +509,11 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        System.out.println("tree 'containsAll()' run!");
         if (this == c) {
             return true;
         }
-        for (Object element : c) {
-            if (!contains(element)) {
+        for (Object o : c) {
+            if (!contains(o)) {
                 return false;
             }
         }
@@ -508,12 +527,12 @@ public class MyUniqueBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
         }
         int initialSize = 0;
         List<T> toRemove = new DoublyLinkedList<>();
-        for (T element: this) {
+        for (T element : this) {
             if (!c.contains(element)) {
                 toRemove.add(element);
             }
         }
-        for (T element: toRemove) {
+        for (T element : toRemove) {
             remove(element);
         }
         return size == initialSize;

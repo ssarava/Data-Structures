@@ -1,11 +1,8 @@
 package LinkedList.Tests;
 
 import static org.junit.Assert.*;
-
 import java.util.Random;
-
 import org.junit.Test;
-
 import LinkedList.impl.DoublyLinkedList;
 
 public class DLLTests {
@@ -303,11 +300,11 @@ public class DLLTests {
 	@Test
 	public void testRemove() {
 		DoublyLinkedList<Integer> list1 = new DoublyLinkedList<>();
-		for (int index = 0; index < 7; index ++) {
+		for (int index = 0; index < 7; index++) {
 			list1.addLast(index);
 		}
 		int initialSize1 = list1.size();
-		
+
 		for (int index = 0; index < initialSize1; index++) {
 			int first = list1.get(0);
 			Integer removed = list1.removeFirst();
@@ -316,13 +313,12 @@ public class DLLTests {
 		}
 		System.out.println("-----------------------------------------------------------");
 
-
 		DoublyLinkedList<Integer> list2 = new DoublyLinkedList<>();
-		for (int index = 0; index < 7; index ++) {
+		for (int index = 0; index < 7; index++) {
 			list2.addLast(index);
 		}
 		int initialSize2 = list2.size();
-		
+
 		for (int index = initialSize2 - 1; index >= 0; index--) {
 			int last2 = list2.get(list2.size() - 1);
 			Integer removed2 = list2.remove(list2.size() - 1);
@@ -334,11 +330,12 @@ public class DLLTests {
 	@Test
 	public void testAdd() {
 		DoublyLinkedList<Integer> list1 = new DoublyLinkedList<>();
-		for (int index = 0; index < 10; index ++) {
+		for (int index = 0; index < 10; index++) {
 			list1.addLast(index);
 		}
 		System.out.println(list1);
-		System.out.println("-------------------------------------------------------------------------------------------------------------------------------------");
+		System.out.println(
+				"-------------------------------------------------------------------------------------------------------------------------------------");
 
 		list1.add(3, 16);
 		assertTrue(list1.size() == 11 && list1.indexOf(16) == 3);

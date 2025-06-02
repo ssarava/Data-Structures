@@ -3,7 +3,8 @@ package Heaps.Tests;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import Heaps.impl.*;
+import Heaps.impl.MaxHeap;
+import Heaps.impl.MinHeap;
 
 public class HeapTests {
 

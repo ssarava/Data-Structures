@@ -218,9 +218,10 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         if (o == null) {
             throw new NullPointerException("List does not contain null elements.");
         }
-        if (o.getClass() != head.data.getClass()) {
+        if (!head.data.getClass().isAssignableFrom(o.getClass())) {
             throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
         }
+        
         Node curr = head;
         while (curr != null) {
             if (curr.data.equals(o)) {
@@ -241,17 +242,17 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         return -1;
     }
 
-    public int lastIndexOf(Object element) {
-        if (element == null) {
+    public int lastIndexOf(Object o) {
+        if (o == null) {
             throw new NullPointerException("Cannot remove a null reference from the list.");
         }
-        if (element.getClass() != head.data.getClass()) {
-            throw new ClassCastException(element.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
+        if (!head.data.getClass().isAssignableFrom(o.getClass())) {
+            throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
         }
         int index = size - 1;
         Node curr = tail;
         while (curr != null) {
-            if (curr.data.equals(element)) {
+            if (curr.data.equals(o)) {
                 return index;
             }
             index--;
@@ -266,9 +267,6 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         }
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("cannot set element at index " + index);
-        }
-        if (element.getClass() != head.data.getClass()) {
-            throw new ClassCastException(element.getClass().getName() + " is not compatible with a deque of type " + head.data.getClass().getName());
         }
         Node curr;
         int currIndex;
@@ -580,6 +578,9 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
 
             private Node curr = head;
             private int currInd = 0;
+            private boolean addCalledAfterNextOrPrev = false;
+            private boolean lastCallWasAdd = false, lastCallWasRemove = false;
+            private T lastReturnedByNextOrPrevious = null;
 
             @Override
             public boolean hasNext() {
@@ -590,12 +591,16 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
             public T next() {
                 T data = curr.data;
                 curr = curr.next;
+                lastReturnedByNextOrPrevious = data;
                 currInd++;
                 return data;
             }
 
             @Override
             public boolean hasPrevious() {
+                if (curr == head) {
+                    return false;
+                }
                 return curr != null;
             }
 
@@ -603,6 +608,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
             public T previous() {
                 T data = curr.data;
                 curr = curr.prev;
+                lastReturnedByNextOrPrevious = data;
                 currInd--;
                 return data;
             }
@@ -614,11 +620,16 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
 
             @Override
             public int previousIndex() {
+                if (currInd == 0) {
+                    return -1;
+                }
                 return currInd - 1;
             }
 
             @Override
             public void remove() {
+                // lastCallWasAdd = false;
+                // lastCallWasRemove = true;
                 throw new UnsupportedOperationException("Unimplemented method 'remove'");
             }
 
@@ -629,6 +640,8 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
 
             @Override
             public void add(T e) {
+                // lastCallWasAdd = true;
+                // lastCallWasRemove = false;
                 throw new UnsupportedOperationException("Unimplemented method 'add'");
             }
 
@@ -641,6 +654,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
 
             private Node curr = head;
             private int currInd = initializeIndex(index);
+            private boolean removedCalledAfterNextOrPrev = false, addCalledAfterNextOrPrev = false;
 
             private static int initializeIndex(int index) {
                 int someInd = 0;
@@ -665,6 +679,9 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
 
             @Override
             public boolean hasPrevious() {
+                if (curr == head) {
+                    return false;
+                }
                 return curr != null;
             }
 
@@ -683,6 +700,9 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
 
             @Override
             public int previousIndex() {
+                if (currInd == 0) {
+                    return -1;
+                }
                 return currInd - 1;
             }
 

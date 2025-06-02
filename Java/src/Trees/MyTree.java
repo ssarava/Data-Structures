@@ -2,9 +2,22 @@ package Trees;
 
 import java.util.Collection;
 
-public interface MyTree<T> extends Collection<T> {
+public interface MyTree<T extends Comparable<T>> extends Collection<T> {
     
-    void insert(T element);
+    /**
+     * Returns {@code true} if this tree's structure changes as a result of
+     * the call. Returns {@code false} if the specified element is a null
+     * reference.<p>
+     *
+     * If this tree permits duplicates, {@code true} is always returned. If 
+     * duplicates are not permited, {@code false} is returned if this tree already
+     * contains the specified element, and {@code true} otherwise.<p>
+     *
+     * @param e element whose presence in this collection is to be ensured
+     * @return {@code true} if this collection changed as a result of the
+     *         call
+     */
+    boolean insert(T element);
 
     /**
      * Removes a single instance of the specified element from this
