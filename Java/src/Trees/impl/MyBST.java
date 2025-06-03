@@ -385,24 +385,6 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         }
     }
 
-    @Override
-    public List<T> bfs() {
-        List<T> acc = new SinglyLinkedList<>();
-        Queue<Node<T>> queue = new SinglyLinkedList<>();
-        queue.add(root);
-        while (!queue.isEmpty()) {
-            Node<T> curr = queue.remove();
-            acc.add(curr.key);
-            if (curr.left != null) {
-                queue.add(curr.left);
-            }
-            if (curr.right != null) {
-                queue.add(curr.right);
-            }
-        }
-        return acc;
-    }
-
     public List<T> dfs() {
         List<T> acc = new SinglyLinkedList<>();
         MyStack<Node<T>> stack = new MyStack<>();
@@ -420,9 +402,25 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         return acc;
     }
 
-    @Override
-    public List<T> levelorder() {
-        return bfs();
+    public List<T> bfs() {
+        List<T> acc = new SinglyLinkedList<>();
+        Queue<Node<T>> queue = new SinglyLinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            Node<T> curr = queue.remove();
+            acc.add(curr.key);
+            if (curr.left != null) {
+                queue.add(curr.left);
+            }
+            if (curr.right != null) {
+                queue.add(curr.right);
+            }
+        }
+        return acc;
+    }
+
+    public void levelorderTraversal() {
+        System.out.println(bfs());
     }
 
     /**

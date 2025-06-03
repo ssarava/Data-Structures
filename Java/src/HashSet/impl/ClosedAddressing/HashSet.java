@@ -15,7 +15,7 @@ import LinkedList.impl.DoublyLinkedList;
  * It follows open hashing (closed addressing).
  * A singly-linked-list-like data structure supports separate chaining.
  */
-public class MyHashSet<T extends Comparable<T>> implements Cloneable, Set<T> {
+public class HashSet<T extends Comparable<T>> implements Cloneable, Set<T> {
 
 	public static int debug = 0;
 	public static void main(String[] args) {
@@ -59,15 +59,15 @@ public class MyHashSet<T extends Comparable<T>> implements Cloneable, Set<T> {
 	private Node[] hashtable;
 
 	@SuppressWarnings("unchecked")
-	public MyHashSet(int customCapacity) {
+	public HashSet(int customCapacity) {
 		if (customCapacity <= 0) {
 			throw new IllegalArgumentException("Can't initialize a list of length " + customCapacity);
 		}
 		size = 0;
-		hashtable = new MyHashSet.Node[customCapacity];
+		hashtable = new HashSet.Node[customCapacity];
 	}
 
-	public MyHashSet() {
+	public HashSet() {
 		this(DEFAULT_TABLE_SIZE);
 	}
 
@@ -156,12 +156,12 @@ public class MyHashSet<T extends Comparable<T>> implements Cloneable, Set<T> {
 		if (this == other) {
 			return true;
 		}
-		if (!(other instanceof MyHashSet)) {
+		if (!(other instanceof HashSet)) {
 			return false;
 		}
 
 		@SuppressWarnings("unchecked")
-		MyHashSet<T> otherHashSet = (MyHashSet<T>) other;
+		HashSet<T> otherHashSet = (HashSet<T>) other;
 
 		// check for equal capacities
 		if (hashtable.length != otherHashSet.hashtable.length) {
@@ -196,8 +196,8 @@ public class MyHashSet<T extends Comparable<T>> implements Cloneable, Set<T> {
 	 * Returns a shallow copy of this HashSet instance; the elements aren't cloned.
 	 */
 	@Override
-	public MyHashSet<T> clone() {
-		MyHashSet<T> clonedSet = new MyHashSet<>(hashtable.length);
+	public HashSet<T> clone() {
+		HashSet<T> clonedSet = new HashSet<>(hashtable.length);
 		clonedSet.size = size;
 		for (int index = 0; index < hashtable.length; index ++) {
 			clonedSet.hashtable[index] = hashtable[index];
@@ -234,7 +234,7 @@ public class MyHashSet<T extends Comparable<T>> implements Cloneable, Set<T> {
 
 		// Step 2: Allocate space for the new table
 		@SuppressWarnings("unchecked")
-		MyHashSet<T>.Node[] newTable = new MyHashSet.Node[newCap];
+		HashSet<T>.Node[] newTable = new HashSet.Node[newCap];
 
 		// Step 3: Use a new hash function given the new capacity to rehash/reinsert all keys
 		for (int index = 0; index < hashtable.length; index++) {
