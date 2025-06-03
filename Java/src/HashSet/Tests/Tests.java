@@ -6,13 +6,13 @@ import java.util.Iterator;
 
 import org.junit.*;
 
-import HashSet.impl.ClosedAddressing.HashSet;
+import HashSet.impl.ClosedAddressing.MyHashSet;
 
 public class Tests {
 
     @Test
     public void testConstructorsAndGetters() {
-        HashSet<Integer> set1 = new HashSet<>();
+        MyHashSet<Integer> set1 = new MyHashSet<>();
         assertTrue(set1.size() == 0);
         for (int index = 0; index < 10; index++) {
             set1.add(index);
@@ -23,7 +23,7 @@ public class Tests {
 
     @Test
     public void misc() {
-        HashSet<String> set1 = new HashSet<>(4);
+        MyHashSet<String> set1 = new MyHashSet<>(4);
 
         for (int ind = 0; ind < 12; ind++) {
             String s = "hello" + String.valueOf(ind);

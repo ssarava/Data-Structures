@@ -1,6 +1,7 @@
 package Trees;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface MyTree<T extends Comparable<T>> extends Collection<T> {
     
@@ -36,4 +37,10 @@ public interface MyTree<T extends Comparable<T>> extends Collection<T> {
      *         is not supported by this collection
      */
     boolean delete(Object o);
+
+    List<T> bfs();
+
+    List<T> dfs();
+
+    List<T> levelorder();
 }

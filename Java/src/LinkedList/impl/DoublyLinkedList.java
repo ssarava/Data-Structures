@@ -189,6 +189,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean equals(Object other) {
         if (this == other) {
             return true;
@@ -196,7 +197,6 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         if (!(other instanceof DoublyLinkedList)) {
             return false;
         }
-        @SuppressWarnings("unchecked")
         DoublyLinkedList<T> temp = (DoublyLinkedList<T>) other;
         Node curr1 = head, curr2 = temp.head;
         while (curr1 != null && curr2 != null) {
