@@ -168,19 +168,7 @@ public class Treap<T extends Comparable<T>> extends MyUniqueBST<T> {
         // handle rotations while the added node isn't the root and has a priority greater than its parent's
         while (added.parent != null && added.priority.compareTo(added.parent.priority) > 0) {
             boolean leftRotation = added.key.compareTo(added.parent.key) > 0;
-
-            // left rotate
-            if (leftRotation) {
-                System.out.println(
-                        "before " + (debugCounter + 1) + "st left rotation:\tadded.parent.key = " + added.parent.key
-                                + "\tadded.parent.priority = " + added.parent.priority + "\t" + debugCounter++);
-                leftRotateUp(added);
-                System.out.println("after " + (debugCounter) + "st left rotation: ");
-
-            // right rotate
-            } else {
-                break;
-            }
+            rotateInsertion(added, leftRotation);
         }
         if (debugCounter > 0) {
             System.out.println((debugCounter) + (debugCounter == 1 ? " rotation was " : " rotations were ") + "needed following the insertion of " + keyIn + "\n");
@@ -190,7 +178,6 @@ public class Treap<T extends Comparable<T>> extends MyUniqueBST<T> {
         return true;
     }
 
-    // incomplete...
     private void leftRotateUp(TreapNode inserted) {
         if (debugCounter > 5) {
             System.out.println("exiting within 'left_rotate'");
@@ -226,6 +213,111 @@ public class Treap<T extends Comparable<T>> extends MyUniqueBST<T> {
                 tempGrandparent.left = inserted;
             }
             inserted.parent = tempGrandparent;
+        }
+    }
+
+    private void rightRotateUp(TreapNode inserted) {
+        if (debugCounter > 5) {
+            System.out.println("exiting within 'right_rotate'");
+            System.exit(0);
+        }
+
+        boolean isInsertedNodeChildOfRoot = inserted.parent == root;
+        TreapNode tempRightChild = inserted.right, tempParent = inserted.parent;
+
+        // grandchild-specific
+        TreapNode tempGrandparent = inserted.parent != root ? inserted.parent.parent : null;
+        boolean leftSubTree = inserted.parent != root ? inserted.key.compareTo(tempGrandparent.key) > 0: false;
+
+        // isolate the inserted node
+        inserted.parent = null;
+        inserted.right = null;
+        if (tempRightChild != null) {
+            tempRightChild.parent = tempParent;
+        }
+        tempParent.left = tempRightChild;
+
+        // place inserted node correctly
+        inserted.right = tempParent;
+        tempParent.parent = inserted;
+
+        // guaranteed to be the right child of the root
+        if (isInsertedNodeChildOfRoot) {
+            root = inserted;
+        } else {
+            if (leftSubTree) {
+                tempGrandparent.right = inserted;
+            } else {
+                tempGrandparent.left = inserted;
+            }
+            inserted.parent = tempGrandparent;
+        }
+    }
+
+    private void rotateInsertion(TreapNode inserted, boolean leftRotationNeeded) {
+        // if left rotation needed:
+        if (leftRotationNeeded) {
+            boolean isInsertedNodeChildOfRoot = inserted.parent == root;
+            TreapNode tempLeftChild = inserted.left, tempParent = inserted.parent;
+
+            // grandchild-specific
+            TreapNode tempGrandparent = inserted.parent != root ? inserted.parent.parent : null;
+            boolean rightSubTree = inserted.parent != root ? inserted.key.compareTo(tempGrandparent.key) > 0: false;
+
+            // isolate the inserted node
+            inserted.parent = null;
+            inserted.left = null;
+            if (tempLeftChild != null) {
+                tempLeftChild.parent = tempParent;
+            }
+            tempParent.right = tempLeftChild;
+
+            // place inserted node correctly
+            inserted.left = tempParent;
+            tempParent.parent = inserted;
+
+            // guaranteed to be the right child of the root
+            if (isInsertedNodeChildOfRoot) {
+                root = inserted;
+            } else {
+                if (rightSubTree) {
+                    tempGrandparent.right = inserted;
+                } else {
+                    tempGrandparent.left = inserted;
+                }
+                inserted.parent = tempGrandparent;
+            }
+        } else {
+            boolean isInsertedNodeChildOfRoot = inserted.parent == root;
+            TreapNode tempRightChild = inserted.right, tempParent = inserted.parent;
+
+            // grandchild-specific
+            TreapNode tempGrandparent = inserted.parent != root ? inserted.parent.parent : null;
+            boolean leftSubTree = inserted.parent != root ? inserted.key.compareTo(tempGrandparent.key) > 0: false;
+
+            // isolate the inserted node
+            inserted.parent = null;
+            inserted.right = null;
+            if (tempRightChild != null) {
+                tempRightChild.parent = tempParent;
+            }
+            tempParent.left = tempRightChild;
+
+            // place inserted node correctly
+            inserted.right = tempParent;
+            tempParent.parent = inserted;
+
+            // guaranteed to be the right child of the root
+            if (isInsertedNodeChildOfRoot) {
+                root = inserted;
+            } else {
+                if (leftSubTree) {
+                    tempGrandparent.right = inserted;
+                } else {
+                    tempGrandparent.left = inserted;
+                }
+                inserted.parent = tempGrandparent;
+            }
         }
     }
 

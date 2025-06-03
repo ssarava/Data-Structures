@@ -1,17 +1,21 @@
 package HashSet.impl.ClosedAddressing;
 
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
-import LinkedList.impl.SinglyLinkedList;
+import LinkedList.impl.DoublyLinkedList;
 
 /**
  * This immutable class is an implementation of Java's HashSet class.
  * It follows open hashing (closed addressing).
  * A singly-linked-list-like data structure supports separate chaining.
  */
-public class HashSet<T extends Comparable<T>> implements Cloneable, Iterable<T> {
+public class HashSet<T extends Comparable<T>> implements Cloneable, Set<T> {
 
 	public static int debug = 0;
 	public static void main(String[] args) {
@@ -49,13 +53,11 @@ public class HashSet<T extends Comparable<T>> implements Cloneable, Iterable<T> 
 	 */
 	private int size;
 
+	/**
+	 * This set is backed by an array rather than an ArrayList
+	 */
 	private Node[] hashtable;
 
-	/**
-	 * Allows for the hashtable to be a chosen size upon initialization
-	 * 
-	 * @param customCapacity
-	 */
 	@SuppressWarnings("unchecked")
 	public HashSet(int customCapacity) {
 		if (customCapacity <= 0) {
@@ -65,67 +67,72 @@ public class HashSet<T extends Comparable<T>> implements Cloneable, Iterable<T> 
 		hashtable = new HashSet.Node[customCapacity];
 	}
 
-	/**
-	 * The hashtable is set to the default size of 4 upon initialization
-	 */
 	public HashSet() {
 		this(DEFAULT_TABLE_SIZE);
 	}
 
+	@Override
 	public int size() {
 		return size;
 	}
 
-	public boolean contains(T obj) {
-		int targInd = Math.abs(obj.hashCode() % hashtable.length); // hashcode mod capacity to find appropriate insertion index
+	@Override
+	public boolean contains(Object o) {
+		if (o == null) {
+            throw new NullPointerException("Cannot remove a null reference from the list.");
+        }
+		int targInd = Math.abs(o.hashCode() % hashtable.length); // hashcode mod capacity to find appropriate insertion index
 
 		// search through chain
 		for (Node curr = hashtable[targInd]; curr != null; curr = curr.next) {
-			if (curr.value.equals(obj)) {
+			if (curr.value.equals(o)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	/**
-	 * Adds to the set if it doesn't already exist. Prior to adding the argument,
-	 * this function rebuilds the underlying hashtable if it's overfull
-	 * 
-	 * @param obj is added only if it doesn't already exist in the set
-	 */
-	public void add(T obj) {
-		if (!contains(obj)) {
-			int insertIndex = Math.abs(obj.hashCode() % hashtable.length);
-			Node node = new Node(obj);
+	@Override
+	public boolean add(T o) {
+		if (o == null) {
+            throw new NullPointerException("Cannot remove a null reference from the list.");
+        }
+		if (!contains(o)) {
+			int insertIndex = Math.abs(o.hashCode() % hashtable.length);
+			Node node = new Node(o);
 			if (hashtable[insertIndex] != null) {
 				node.next = hashtable[insertIndex];
 			}
 			hashtable[insertIndex] = node;
 			size++;
+
+			// rehash if overfull
+			double ratio = ((double) size) / ((double) hashtable.length);
+			if (ratio > LOAD_FACTOR) {
+				rehash();
+			}
+			return true;
 		}
-		// rehash if overfull
-		double ratio = ((double) size) / ((double) hashtable.length);
-		if (ratio > LOAD_FACTOR) {
-			rehash();
-		}
+		return false;
 
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return size == 0;
 	}
 
-	public boolean remove(T obj) {
-		if (contains(obj)) {
+	@Override
+	public boolean remove(Object o) {
+		if (contains(o)) {
 			// remove the object from its chain
-			int targIndex = Math.abs(obj.hashCode() % hashtable.length);
+			int targIndex = Math.abs(o.hashCode() % hashtable.length);
 			Node curr = hashtable[targIndex];
-			if (curr.value.equals(obj)) {
+			if (curr.value.equals(o)) {
 				hashtable[targIndex] = null;
 			} else {
 				Node prev = null;
-				while (!curr.value.equals(obj)) {
+				while (!curr.value.equals(o)) {
 					prev = curr;
 					curr = curr.next;
 				}
@@ -153,6 +160,7 @@ public class HashSet<T extends Comparable<T>> implements Cloneable, Iterable<T> 
 			return false;
 		}
 
+		@SuppressWarnings("unchecked")
 		HashSet<T> otherHashSet = (HashSet<T>) other;
 
 		// check for equal capacities
@@ -203,8 +211,8 @@ public class HashSet<T extends Comparable<T>> implements Cloneable, Iterable<T> 
 		return toList().iterator();
 	}
 
-	// Technically, sets are unordered, so there's no point in reversing one.
-	private Iterator<T> reverse_iterator() {
+	// Technically, sets are unordered, so it doesn't make sense to reverse one.
+	protected Iterator<T> reverse_iterator() {
 		return reverse(toList()).iterator();
 	}
 
@@ -225,6 +233,7 @@ public class HashSet<T extends Comparable<T>> implements Cloneable, Iterable<T> 
 		int newCap = hashtable.length * 2;
 
 		// Step 2: Allocate space for the new table
+		@SuppressWarnings("unchecked")
 		HashSet<T>.Node[] newTable = new HashSet.Node[newCap];
 
 		// Step 3: Use a new hash function given the new capacity to rehash/reinsert all keys
@@ -282,5 +291,93 @@ public class HashSet<T extends Comparable<T>> implements Cloneable, Iterable<T> 
 			sb.append("null\n");
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public Object[] toArray() {
+		Object[] arr = new Object[size];
+        int index = 0;
+		for (T element: toList()) {
+			arr[index ++]  = element;
+		} 
+        return arr;
+	}
+
+	@SuppressWarnings({ "unchecked", "hiding" })
+	@Override
+	public <T> T[] toArray(T[] a) {
+		if (a.length != size) {
+            a = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+        }
+        Object[] pointer = a; // needed to resolve compiler type conversion conflict
+        int index = 0;
+        for (Object element: toList()) {
+			pointer[index ++]  = element;
+		} 
+        return a;
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> c) {
+		if (this == c) {
+            return true;
+        }
+        for (Object element : c) {
+            if (!contains(element)) {
+                return false;
+            }
+        }
+        return true;
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends T> c) {
+		 if (c == null) {
+            throw new NullPointerException("Cannot add a null reference to the list.");
+        }
+        if (this == c) {
+            throw new ConcurrentModificationException("Adding elements to this list, from this list, isn't allowed.");
+        }
+        int initialSize = size;
+        for (T element : c) {
+            add(element);
+        }
+        return size == initialSize;
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> c) {
+		if (c == null) {
+            throw new NullPointerException("Cannot access elements given a null reference.");
+        }
+		if (this == c) {
+            return false;
+        }
+        int initialSize = 0;
+        DoublyLinkedList<T> toRemove = new DoublyLinkedList<>();
+        for (T element: this) {
+            if (!c.contains(element)) {
+                toRemove.add(element);
+            }
+        }
+        for (T element: toRemove) {
+            remove(element);
+        }
+        return size == initialSize;
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c) {
+		if (c == null) {
+            throw new NullPointerException("Cannot access elements given a null reference.");
+        }
+        if (this == c) {
+            throw new ConcurrentModificationException("Removing elements to this list, from this list, isn't allowed. Try 'clear()'" );
+        }
+        int initialSize = size;
+        for (Object element : c) {
+            remove(element);
+        }
+        return size == initialSize;
 	}
 }

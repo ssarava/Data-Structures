@@ -76,6 +76,7 @@ public class UnionFind {
         return parents[x];
     }
 
+    // incomplete
     private void update_sizes() {
         for (int x = 0; x < sizes.length; x ++) {
             // if (x == parents[x]) {

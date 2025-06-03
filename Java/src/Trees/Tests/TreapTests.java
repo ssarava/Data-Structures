@@ -127,6 +127,57 @@ public class TreapTests {
 
     @Test
     public void testInsertRightRotation() {
+        Integer[] arr = null, priorities = null;
 
+        // inserted.parent = root
+        arr = new Integer[] { 50, 40, 60 };
+        priorities = new Integer[] { 100, 110, 80 };
+        assertTrue(widespreadInsertRotation(arr, priorities));
+
+        arr = new Integer[] { 50, 40, 60, 45 };
+        priorities = new Integer[] { 100, 110, 80, 90 };
+        assertTrue(widespreadInsertRotation(arr, priorities));
+
+        // inserted.parent.parent = root
+        arr = new Integer[] { 50, 40, 30, 45 };
+        priorities = new Integer[] { 100, 90, 95, 80 };
+        assertTrue(widespreadInsertRotation(arr, priorities));
+
+        arr = new Integer[] { 50, 40, 30, 35, 45 };
+        priorities = new Integer[] { 100, 90, 95, 70, 80 };
+        assertTrue(widespreadInsertRotation(arr, priorities));
+
+        arr = new Integer[] { 50, 40, 30, 35 };
+        priorities = new Integer[] { 100, 90, 95, 70 };
+        assertTrue(widespreadInsertRotation(arr, priorities));
+
+        arr = new Integer[] { 50, 60, 55, 70, 57 };
+        priorities = new Integer[] { 100, 90, 95, 60, 50 };
+        assertTrue(widespreadInsertRotation(arr, priorities));
+
+        arr = new Integer[] { 50, 60, 55, 70 };
+        priorities = new Integer[] { 100, 90, 95, 60 };
+        assertTrue(widespreadInsertRotation(arr, priorities));
+
+        arr = new Integer[] { 50, 60, 55, 70 };
+        priorities = new Integer[] { 100, 90, 200, 60 };
+        assertTrue(widespreadInsertRotation(arr, priorities));
+
+        // inserted.parent.parent.parent = root
+        arr = new Integer[] { 50, 30, 10, 5 };
+        priorities = new Integer[] { 100, 90, 80, 85 };
+        assertTrue(widespreadInsertRotation(arr, priorities));
+
+        arr = new Integer[] { 50, 30, 10, 5, 7};
+        priorities = new Integer[] { 100, 90, 80, 85, 70 };
+        assertTrue(widespreadInsertRotation(arr, priorities));
+
+        arr = new Integer[] { 50, 60, 70, 65, 75 };
+        priorities = new Integer[] { 100, 90, 80, 85, 50 };
+        assertTrue(widespreadInsertRotation(arr, priorities));
+
+        arr = new Integer[] { 50, 60, 70, 65, 75, 67};
+        priorities = new Integer[] { 100, 90, 80, 85, 50, 40 };
+        assertTrue(widespreadInsertRotation(arr, priorities));
     }
 }

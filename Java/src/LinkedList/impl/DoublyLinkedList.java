@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
  * Some methods that are rarely used by most users have yet to be written.
  */
 public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
-
+    
     public static void main(String[] args) {
         DoublyLinkedList<Integer> list1 = new DoublyLinkedList<>();
         list1.addLast(0);
@@ -450,11 +450,6 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
         for (Node curr = head; curr != null; curr = curr.next) {
             pointer[index++] = curr.data;
         }
-
-        // set first element immediately following the last element to null (useful for determining size of the list since no null elements are allowed in the list)
-        // if (a.length > size) {
-        //     a[size] = null; 
-        // }
         return a;
     }
 
@@ -578,9 +573,9 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
 
             private Node curr = head;
             private int currInd = 0;
-            private boolean addCalledAfterNextOrPrev = false;
-            private boolean lastCallWasAdd = false, lastCallWasRemove = false;
-            private T lastReturnedByNextOrPrevious = null;
+            // private boolean addCalledAfterNextOrPrev = false;
+            // private boolean lastCallWasAdd = false, lastCallWasRemove = false;
+            // private T lastReturnedByNextOrPrevious = null;
 
             @Override
             public boolean hasNext() {
@@ -591,7 +586,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
             public T next() {
                 T data = curr.data;
                 curr = curr.next;
-                lastReturnedByNextOrPrevious = data;
+                // lastReturnedByNextOrPrevious = data;
                 currInd++;
                 return data;
             }
@@ -608,7 +603,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
             public T previous() {
                 T data = curr.data;
                 curr = curr.prev;
-                lastReturnedByNextOrPrevious = data;
+                // lastReturnedByNextOrPrevious = data;
                 currInd--;
                 return data;
             }
@@ -654,7 +649,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T>, Cloneable {
 
             private Node curr = head;
             private int currInd = initializeIndex(index);
-            private boolean removedCalledAfterNextOrPrev = false, addCalledAfterNextOrPrev = false;
+            // private boolean removedCalledAfterNextOrPrev = false, addCalledAfterNextOrPrev = false;
 
             private static int initializeIndex(int index) {
                 int someInd = 0;
