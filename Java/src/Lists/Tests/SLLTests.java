@@ -1,10 +1,10 @@
-package LinkedList.Tests;
+package Tests;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import LinkedList.impl.SinglyLinkedList;
+import impl.SinglyLinkedList;
 
 public class SLLTests {
 	
@@ -87,7 +87,7 @@ public class SLLTests {
 		assertTrue(list1.size() == 0);
 		
 		list1.addFirst(10000);
-		assertTrue(list1.retrieveFirstElement() == (10000));
+		assertTrue(list1.removeFirst() == (10000));
 		assertTrue(list1.peek() == null && list1.size() == 0);
 
 		list1.offer(38021);
@@ -98,11 +98,11 @@ public class SLLTests {
 		list1.offer(-4920);
 		assertTrue(list1.peek() == 0 && list1.getLast() == -4920);
 		assertTrue(list1.size() == 4);
-		assertTrue(list1.retrieveFirstElement() == 0);
+		assertTrue(list1.removeFirst() == 0);
 		assertTrue(list1.size() == 3);
-		assertTrue(list1.retrieveFirstElement() == -193);
+		assertTrue(list1.removeFirst() == -193);
 		assertTrue(list1.size() == 2);
-		assertTrue(list1.retrieveFirstElement() == 38021);
+		assertTrue(list1.removeFirst() == 38021);
 		assertTrue(list1.size() == 1);
 	}
 	
@@ -123,9 +123,9 @@ public class SLLTests {
 		list1.offer(12345);
 		assertTrue(list1.peek() == 88 && list1.getLast() == 12345);
 		assertTrue(list1.size() == 5);
-		assertTrue(list1.retrieveFirstElement() == 88);
+		assertTrue(list1.removeFirst() == 88);
 		assertTrue(list1.size() == 4);
-		assertTrue(list1.retrieveFirstElement() == -4920);
+		assertTrue(list1.removeFirst() == -4920);
 		assertTrue(list1.size() == 3);
 		assertTrue(list1.retrieveLastElement() == 12345);
 		assertTrue(list1.size() == 2);

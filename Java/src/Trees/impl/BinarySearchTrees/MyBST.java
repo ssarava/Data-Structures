@@ -1,4 +1,4 @@
-package Trees.impl;
+package Trees.impl.BinarySearchTrees;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -6,10 +6,9 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
-
-import LinkedList.impl.DoublyLinkedList;
-import LinkedList.impl.SinglyLinkedList;
-import Stack.src.MyStack;
+import impl.DoublyLinkedList;
+import impl.SinglyLinkedList;
+import Stacks.src.MyStack;
 import Trees.MyTree;
 
 /**
@@ -18,32 +17,20 @@ import Trees.MyTree;
  */
 public class MyBST<T extends Comparable<T>> implements MyTree<T> {
 
-    public static void main(String[] args) {
-        MyBST<Integer> tree1 = new MyBST<>();
-        tree1.insert(40);
-        tree1.insert(20);
-        tree1.insert(60);
-        tree1.insert(10);
-        tree1.insert(30);
-        tree1.insert(50);
-        tree1.insert(70);
+    protected class Node {
 
-    }
+        protected T key;
+        protected Node left, right;
+        protected int selfCount;
 
-    protected static class Node<T extends Comparable<T>> {
-
-        private T key;
-        private Node<T> left, right;
-        private int selfCount;
-
-        private Node(T keyIn) {
+        protected Node(T keyIn) {
             key = keyIn;
             left = null;
             right = null;
             selfCount = 1;
         }
 
-        private Node(Node<T> other) {
+        protected Node(Node other) {
             this(other.key);
             left = other.left;
             right = other.right;
@@ -55,7 +42,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
                 return true;
             }
             @SuppressWarnings("unchecked")
-            Node<T> temp = (Node<T>) other;
+            Node temp = (Node) other;
             return key.compareTo(temp.key) == 0 && selfCount == temp.selfCount;
         }
 
@@ -64,7 +51,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
             return toStringHelper(this, "");
         }
 
-        private String toStringHelper(Node<T> node, String indent) {
+        private String toStringHelper(Node node, String indent) {
             if (node == null) {
                 return "";
             }
@@ -74,7 +61,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         }
     }
 
-    public Node<T> root;
+    public Node root;
     private int size;
 
     public MyBST() {
@@ -82,12 +69,14 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         size = 0;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public boolean insert(T key) {
+    public boolean insert(Object key) {
+        T temp = (T) key;
         if (contains(key)) {
-            Node<T> curr = root;
+            Node curr = root;
             while (!curr.key.equals(key)) {
-                int result = curr.key.compareTo(key);
+                int result = curr.key.compareTo(temp);
                 if (result < 0) {
                     // go right
                     curr = curr.right;
@@ -100,7 +89,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
             }
             curr.selfCount++;
         } else {
-            root = insertHelper(root, key);
+            root = insertHelper(root, temp);
         }
         size++;
         return true;
@@ -118,7 +107,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
             throw new ClassCastException(o.getClass().getName() + " is not compatible with a deque of type "
                     + root.key.getClass().getName());
         }
-        Node<T> curr = root;
+        Node curr = root;
         while (curr != null) {
             @SuppressWarnings("unchecked")
             int result = curr.key.compareTo((T) o);
@@ -135,9 +124,9 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         return false;
     }
 
-    private Node<T> insertHelper(Node<T> root, T toAdd) {
+    private Node insertHelper(Node root, T toAdd) {
         if (root == null) {
-            return new Node<T>(toAdd);
+            return new Node(toAdd);
         }
         int result = root.key.compareTo(toAdd);
         if (result < 0) {
@@ -155,7 +144,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         if (!contains(o)) {
             return false;
         } else {
-            Node<T> curr = root;
+            Node curr = root;
             while (!curr.key.equals(o)) {
                 @SuppressWarnings("unchecked")
                 int result = curr.key.compareTo((T) o);
@@ -180,7 +169,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private Node<T> delete_helper(Node<T> root, Object element) {
+    private Node delete_helper(Node root, Object element) {
         if (root == null) {
             return root;
         }
@@ -213,11 +202,11 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         return root;
     }
 
-    private T inorderSuccessor(Node<T> node) {
+    private T inorderSuccessor(Node node) {
         if (size == 0) {
             return null;
         }
-        Node<T> curr = node.right;
+        Node curr = node.right;
         // go right once, then left as far as possible
         while (curr != null && curr.left != null) {
             curr = curr.left;
@@ -231,7 +220,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         return acc;
     }
 
-    public void getLeavesHelper(Node<T> root, List<T> acc) {
+    public void getLeavesHelper(Node root, List<T> acc) {
         if (root != null) {
             if (root.left == null && root.right == null) {
                 acc.add(root.key);
@@ -245,7 +234,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         return isLeafHelper(root, key);
     }
 
-    private boolean isLeafHelper(Node<T> root, T key) {
+    private boolean isLeafHelper(Node root, T key) {
         if (root == null) {
             return false;
         }
@@ -260,10 +249,10 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
      * traversal.
      */
     public void preorder_flatten() {
-        Node<T> curr = root;
+        Node curr = root;
         while (curr != null) {
             if (curr.left != null) {
-                Node<T> predecessor = curr.left;
+                Node predecessor = curr.left;
                 while (predecessor.right != null) {
                     predecessor = predecessor.right;
                 }
@@ -291,10 +280,10 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
     public void inorder_flatten() {
         // TODO
         // throw new UnsupportedOperationException("Unimplemented!");
-        Node<T> curr = root;
+        Node curr = root;
         while (curr != null) {
             if (curr.right != null) {
-                Node<T> successor = curr.right;
+                Node successor = curr.right;
                 while (successor.left != null) {
                     successor = successor.right;
                 }
@@ -320,9 +309,9 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
      * traversal.
      */
     // private void initial_flatten() {
-    // List<Node<T>> inorder = new SinglyLinkedList<>();
+    // List<Node> inorder = new SinglyLinkedList<>();
     // flatten_helper(root, inorder);
-    // for (Node<T> node: inorder) {
+    // for (Node node: inorder) {
     // node.left = null;
     // node.right = null;
     // }
@@ -332,7 +321,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
     // root = inorder.get(0);
     // }
 
-    // private void flatten_helper(Node<T> root, List<Node<T>> acc) {
+    // private void flatten_helper(Node root, List<Node> acc) {
     // if (root != null) {
     // acc.add(root);
     // flatten_helper(root.left, acc);
@@ -349,7 +338,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         return inorder;
     }
 
-    private void inorder_helper(Node<T> root, List<T> acc) {
+    private void inorder_helper(Node root, List<T> acc) {
         if (root != null) {
             inorder_helper(root.left, acc);
             acc.add(root.key);
@@ -363,7 +352,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         return preorder;
     }
 
-    private void preorder_helper(Node<T> root, List<T> acc) {
+    private void preorder_helper(Node root, List<T> acc) {
         if (root != null) {
             acc.add(root.key);
             preorder_helper(root.left, acc);
@@ -377,7 +366,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         return postorder;
     }
 
-    private void postorder_helper(Node<T> root, List<T> acc) {
+    private void postorder_helper(Node root, List<T> acc) {
         if (root != null) {
             postorder_helper(root.left, acc);
             postorder_helper(root.right, acc);
@@ -387,10 +376,10 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
 
     public List<T> dfs() {
         List<T> acc = new SinglyLinkedList<>();
-        MyStack<Node<T>> stack = new MyStack<>();
+        MyStack<Node> stack = new MyStack<>();
         stack.push(root);
         while (!stack.isEmpty()) {
-            Node<T> curr = stack.pop();
+            Node curr = stack.pop();
             acc.add(curr.key);
             if (curr.left != null) {
                 stack.push(curr.left);
@@ -404,10 +393,10 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
 
     public List<T> bfs() {
         List<T> acc = new SinglyLinkedList<>();
-        Queue<Node<T>> queue = new SinglyLinkedList<>();
+        Queue<Node> queue = new SinglyLinkedList<>();
         queue.add(root);
         while (!queue.isEmpty()) {
-            Node<T> curr = queue.remove();
+            Node curr = queue.remove();
             acc.add(curr.key);
             if (curr.left != null) {
                 queue.add(curr.left);
@@ -419,8 +408,8 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         return acc;
     }
 
-    public void levelorderTraversal() {
-        System.out.println(bfs());
+    public List<T> levelorder() {
+        return bfs();
     }
 
     /**
@@ -452,7 +441,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T> {
         return toStringHelper(root, "");
     }
 
-    private String toStringHelper(Node<T> node, String indent) {
+    private String toStringHelper(Node node, String indent) {
         if (node == null) {
             return "";
         }

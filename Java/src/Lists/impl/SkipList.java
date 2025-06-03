@@ -1,9 +1,7 @@
-package Skiplist.impl;
+package impl;
 
 import java.util.List;
 import java.util.Random;
-
-import LinkedList.impl.SinglyLinkedList;
 
 public class SkipList<T> {
 
@@ -61,7 +59,9 @@ public class SkipList<T> {
 
     }
 
-    private int newLevel() {
+    protected int newLevel() {
+        System.out.println(tail);
+        System.out.println(prob);
         int newLevel = 0;
         Random rand = new Random();
         while (Math.abs(rand.nextInt()) % 2 == 0) {

@@ -1,9 +1,9 @@
-package LinkedList.Tests;
+package Tests;
 
 import static org.junit.Assert.*;
 import java.util.Random;
 import org.junit.Test;
-import LinkedList.impl.DoublyLinkedList;
+import impl.DoublyLinkedList;
 
 public class DLLTests {
 

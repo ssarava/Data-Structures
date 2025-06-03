@@ -1,6 +1,7 @@
 package Trees;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface MyTree<T extends Comparable<T>> extends Collection<T> {
     
@@ -17,7 +18,7 @@ public interface MyTree<T extends Comparable<T>> extends Collection<T> {
      * @return {@code true} if this collection changed as a result of the
      *         call
      */
-    boolean insert(T element);
+    boolean insert(Object element);
 
     /**
      * Removes a single instance of the specified element from this
@@ -36,4 +37,10 @@ public interface MyTree<T extends Comparable<T>> extends Collection<T> {
      *         is not supported by this collection
      */
     boolean delete(Object o);
+
+    List<T> levelorder();
+
+    List<T> bfs();
+    
+    List<T> dfs();
 }

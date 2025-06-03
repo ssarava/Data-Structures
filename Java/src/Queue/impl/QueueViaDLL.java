@@ -1,14 +1,13 @@
 package Queue.impl;
 import java.util.Iterator;
+import impl.DoublyLinkedList;
 
-import LinkedList.impl.DoublyLinkedList;
-
-public class DLLQueue<T> {
+public class QueueViaDLL<T> {
     final static int CAPACITY = 10;
     private DoublyLinkedList<T> queue;
     private int size;
 
-    public DLLQueue() {
+    public QueueViaDLL() {
         this.queue = new DoublyLinkedList<>();
         this.size = 0;
     }

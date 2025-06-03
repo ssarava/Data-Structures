@@ -3,13 +3,13 @@ package Queue.Tests;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import Queue.impl.DLLQueue;
+import Queue.impl.QueueViaDLL;
 
 public class StudentTestsDLL {
 
     @Test
     public void testConstructor() {
-        DLLQueue<Integer> list1 = new DLLQueue<Integer>();
+        QueueViaDLL<Integer> list1 = new QueueViaDLL<Integer>();
         assertTrue(list1.getSize() == 0);
         assertTrue(list1.isEmpty());
         assertFalse(list1.isFull());
@@ -18,7 +18,7 @@ public class StudentTestsDLL {
 
     @Test
     public void testIsEmptyAndEnqueue() {
-        DLLQueue<Integer> list1 = new DLLQueue<Integer>();
+        QueueViaDLL<Integer> list1 = new QueueViaDLL<Integer>();
         assertTrue(list1.isEmpty());
         System.out.println(list1.toString());
 
@@ -31,7 +31,7 @@ public class StudentTestsDLL {
 
     @Test
     public void testIsFullAndEnqueue() {
-        DLLQueue<Integer> list1 = new DLLQueue<Integer>();
+        QueueViaDLL<Integer> list1 = new QueueViaDLL<Integer>();
         assertFalse(list1.isFull());
         System.out.println(list1.toString());
 
@@ -50,7 +50,7 @@ public class StudentTestsDLL {
 
     @Test
     public void testDequeue() {
-        DLLQueue<Integer> list1 = new DLLQueue<Integer>();
+        QueueViaDLL<Integer> list1 = new QueueViaDLL<Integer>();
         for (int index = 0; index < 10; index++) {
             list1.enqueue(index * 2);
         }
@@ -66,7 +66,7 @@ public class StudentTestsDLL {
 
     @Test
     public void testPeek() {
-        DLLQueue<Integer> list1 = new DLLQueue<Integer>();
+        QueueViaDLL<Integer> list1 = new QueueViaDLL<Integer>();
         for (int index = 0; index < 10; index ++) {
             list1.enqueue(index * 2);
         }

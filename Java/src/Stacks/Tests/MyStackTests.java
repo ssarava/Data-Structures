@@ -1,10 +1,10 @@
-package Stack.Tests;
+package Stacks.Tests;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import Stack.src.MyStack;
+import Stacks.src.MyStack;
 
-public class StudentTests {
+public class MyStackTests {
 
     @Test
 	public void testMyStackConstructorAndGettersAndEmpty() {

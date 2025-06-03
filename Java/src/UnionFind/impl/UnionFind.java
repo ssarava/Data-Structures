@@ -77,15 +77,15 @@ public class UnionFind {
     }
 
     // incomplete
-    private void update_sizes() {
-        for (int x = 0; x < sizes.length; x ++) {
-            // if (x == parents[x]) {
-            //     sizes[x] = 1;
-            // } else {
-            //     sizes[parents[x]] ++;
-            // }
-        }
-    }
+    // private void update_sizes() {
+    //     for (int x = 0; x < sizes.length; x ++) {
+    //         if (x == parents[x]) {
+    //             sizes[x] = 1;
+    //         } else {
+    //             sizes[parents[x]] ++;
+    //         }
+    //     }
+    // }
 
     /**
      * Weighted union. Sets x's root to y's root.

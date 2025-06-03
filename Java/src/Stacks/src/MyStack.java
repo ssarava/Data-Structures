@@ -1,4 +1,4 @@
-package Stack.src;
+package Stacks.src;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -8,10 +8,7 @@ import java.util.EmptyStackException;
 import java.util.Iterator;
 
 /**
- * The implementation of a stack backed by a singly linked list, which is also
- * implemented from scratch.
- *
- * @author Shashank Arava
+ * My implementation of a stack (uses SLL) from scratch.
  */
 public class MyStack<T> implements Collection<T>, Cloneable {
 

@@ -1,8 +1,5 @@
 package Graphs.UnweightedGraph.impl;
 
-import java.util.List;
-import LinkedList.impl.SinglyLinkedList;
-
 /**
  * My implementation of an unweighted, undirected graph.
  * In accordance with standard graph theory, no duplicates are allowed.
@@ -45,6 +42,7 @@ public class MyUnweightedUnirectedGraph<T> {
 
     public void add(T element) {
         Vertex toAdd = new Vertex(element);
+        System.out.println(toAdd);
         int[][] temp = new int[size + 1][size + 1];
         for (int row = 0; row < adjacencies.length; row ++) {
             for (int col = 0; col < adjacencies[0].length; col ++) {

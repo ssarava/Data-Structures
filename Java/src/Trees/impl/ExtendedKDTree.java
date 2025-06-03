@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class ExtendedKDTree {
 
-    private static final Map<Integer, Character> dimensions = Map.of(
+    protected static final Map<Integer, Character> dimensions = Map.of(
         0, 'x',
         1, 'y',
         2, 'z'
@@ -74,8 +74,8 @@ public class ExtendedKDTree {
         }
     }
 
-    private String splitMethod;
-    private int k, m;
+    protected String splitMethod;
+    protected int k, m;
     private Object root;
 
     public ExtendedKDTree(String splitMethodIn, int kIn, int mIn, Object rootIn) {
@@ -99,20 +99,20 @@ public class ExtendedKDTree {
             return;
         }
 
-        Object curr = root, prev = null;
-        boolean isLeftChild = false;
+        // Object curr = root, prev = null;
+        // boolean isLeftChild = false;
 
-        while (curr instanceof NodeInternal) {
-            prev = curr;
-            NodeInternal tempInternal = (NodeInternal) curr;
-            if (point[tempInternal.splitIndex] < tempInternal.splitValue) {
-                curr = tempInternal.leftChild;
-                isLeftChild = false;
-            } else {
-                curr = tempInternal.rightChild;
-                isLeftChild = true;
-            }
-        }
+        // while (curr instanceof NodeInternal) {
+        //     prev = curr;
+        //     NodeInternal tempInternal = (NodeInternal) curr;
+        //     if (point[tempInternal.splitIndex] < tempInternal.splitValue) {
+        //         curr = tempInternal.leftChild;
+        //         isLeftChild = false;
+        //     } else {
+        //         curr = tempInternal.rightChild;
+        //         isLeftChild = true;
+        //     }
+        // }
 
         
     }

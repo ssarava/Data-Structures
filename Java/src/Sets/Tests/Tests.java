@@ -1,18 +1,17 @@
-package HashSet.Tests;
+package Sets.Tests;
 
 import static org.junit.Assert.*;
 
 import java.util.Iterator;
 
 import org.junit.*;
-
-import HashSet.impl.ClosedAddressing.HashSet;
+import Sets.impl.MyCAHashSet;
 
 public class Tests {
 
     @Test
     public void testConstructorsAndGetters() {
-        HashSet<Integer> set1 = new HashSet<>();
+        MyCAHashSet<Integer> set1 = new MyCAHashSet<>();
         assertTrue(set1.size() == 0);
         for (int index = 0; index < 10; index++) {
             set1.add(index);
@@ -23,7 +22,7 @@ public class Tests {
 
     @Test
     public void misc() {
-        HashSet<String> set1 = new HashSet<>(4);
+        MyCAHashSet<String> set1 = new MyCAHashSet<>(4);
 
         for (int ind = 0; ind < 12; ind++) {
             String s = "hello" + String.valueOf(ind);
