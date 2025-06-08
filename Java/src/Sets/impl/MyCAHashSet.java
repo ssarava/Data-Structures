@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import impl.DoublyLinkedList;
+import Lists.impl.DoublyLinkedList;
 
 /**
  * This immutable class is an implementation of Java's HashSet class.

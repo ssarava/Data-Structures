@@ -40,6 +40,8 @@ public interface MyTree<T extends Comparable<T>> extends Collection<T> {
 
     List<T> levelorder();
 
+    List<T> inorder();
+
     List<T> bfs();
     
     List<T> dfs();

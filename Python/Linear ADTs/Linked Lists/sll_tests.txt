@@ -1,7 +1,0 @@
-initialize
-add,head,5
-add,head,4
-add,head,3
-add,head,2
-add,head,1
-dump

@@ -1,6 +1,6 @@
 package Queue.impl;
 import java.util.Iterator;
-import impl.DoublyLinkedList;
+import Lists.impl.DoublyLinkedList;
 
 public class QueueViaDLL<T> {
     final static int CAPACITY = 10;

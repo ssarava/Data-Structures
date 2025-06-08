@@ -1,10 +1,10 @@
-package Tests;
+package Lists.Tests;
 
 import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import impl.SinglyLinkedList;
+import Lists.impl.SinglyLinkedList;
 
 public class SLLTests {
 	

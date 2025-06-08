@@ -1,10 +1,9 @@
-package Tests;
+package Lists.Tests;
 
 import static org.junit.Assert.*;
 import java.util.Random;
 import org.junit.Test;
-import impl.DoublyLinkedList;
-
+import Lists.impl.DoublyLinkedList;
 public class DLLTests {
 
 	public static final Random rand = new Random();

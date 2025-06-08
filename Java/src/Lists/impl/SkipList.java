@@ -1,4 +1,4 @@
-package impl;
+package Lists.impl;
 
 import java.util.List;
 import java.util.Random;
