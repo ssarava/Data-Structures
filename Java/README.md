@@ -1,18 +1,10 @@
-## Getting Started
+## About
 
-This directory contains my implementations of foundational data structures and ones that I find interesting.
+This directory contains my implementations of foundational data structures and others that I find interesting. Written in Java, probably easier in Python.
 
 ## Folder Structure
 
-The workspace contains two folders by default, where:
+The workspace contains two folders:
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+- `src`: contains directories for various data structures.
+- `lib`: maintain dependencies
