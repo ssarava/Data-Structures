@@ -15,6 +15,7 @@ public class MyScapegoatTree<T extends Comparable<T>> extends MyBST<T> {
         // Integer[] keys = new Integer[] {20, 10, 30, 40, 50, 60, 70};
         Integer[] keys = new Integer[] {3, 2, 8, 5, 10, 11, 12, 13};
         tree1.insert(keys);
+        System.out.println(tree1);
     }
 
     protected class Node extends MyBST<T>.Node {
@@ -115,7 +116,7 @@ public class MyScapegoatTree<T extends Comparable<T>> extends MyBST<T> {
         Node added = new Node((T) keyIn);
 
         // bst insert
-        root = bstInsertHelper(added, root, root);
+        root = bstInsertHelper(added, root, null);
         size++;
         m++;
 

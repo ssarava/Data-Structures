@@ -227,7 +227,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
         }
     }
 
-    public boolean isLeaf(T key) {
+    protected boolean isLeaf(T key) {
         return isLeafHelper(root, key);
     }
 
