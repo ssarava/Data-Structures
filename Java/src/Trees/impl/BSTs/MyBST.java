@@ -92,12 +92,13 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
 
     @Override
     public boolean insert(Object key) {
-        if (!contains(key)) {
-            root = insertHelper(root, key);
-            size++;
-            return true;
+        if (contains(key)) {
+            return false;
         }
-        return false;
+        root = insertHelper(root, key);
+        
+        size++;
+        return true;
     }
 
     public boolean insert(Object[] keysIn) {
@@ -160,23 +161,23 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
         if (!contains(element)) {
             return false;
         }
-        root = delete_helper(root, element);
+        root = deleteHelper(root, element);
         size--;
         return true;
     }
 
     @SuppressWarnings("unchecked")
-    private Node delete_helper(Node root, Object element) {
+    private Node deleteHelper(Node root, Object element) {
         if (root == null) {
             return root;
         }
         T temp = (T) element;
         if (root.key.compareTo(temp) < 0) {
             // go right
-            root.right = delete_helper(root.right, element);
+            root.right = deleteHelper(root.right, element);
         } else if (root.key.compareTo(temp) > 0) {
             // go left
-            root.left = delete_helper(root.left, element);
+            root.left = deleteHelper(root.left, element);
 
             // if root is found
         } else {
@@ -194,7 +195,7 @@ public class MyBST<T extends Comparable<T>> implements MyTree<T>, Set<T> {
             // both children are present
             T ios = inorderSuccessor(root);
             root.key = ios;
-            root.right = delete_helper(root.right, ios);
+            root.right = deleteHelper(root.right, ios);
         }
         return root;
     }

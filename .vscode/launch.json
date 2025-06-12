@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "MyRedBlackTree",
+      "request": "launch",
+      "mainClass": "Trees.impl.BSTs.MyRedBlackTree",
+      "projectName": "Data Structures_2fa8c3bc"
+    },
+    {
+      "type": "java",
       "name": "MyAVLTree",
       "request": "launch",
       "mainClass": "Trees.impl.BSTs.MyAVLTree",

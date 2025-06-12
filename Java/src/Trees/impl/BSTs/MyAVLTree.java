@@ -7,8 +7,6 @@ import Stacks.src.MyStack;
 
 public class MyAVLTree<T extends Comparable<T>> extends MyBST<T> {
 
-    private static int debug = 0;
-
     public static void main(String[] args) {
         MyAVLTree<Integer> tree1 = new MyAVLTree<>();
         Integer[] keys;
@@ -31,8 +29,11 @@ public class MyAVLTree<T extends Comparable<T>> extends MyBST<T> {
         // LR heavy
         // keys = new Integer[] {50, 10, 30};
         // keys = new Integer[] {50, 10, 60, 5, 7};
-        keys = new Integer[] {10, 5, 20, 3, 7, 21, 1, 6, 8, 9};
+        // keys = new Integer[] {10, 5, 20, 3, 7, 21, 1, 6, 8, 9};
+
+        keys = new Integer[] {40, 20, 60, 10, 30, 50};
         tree1.insert(keys);
+        tree1.delete(20);
         System.out.println(tree1);
     }
 
@@ -137,10 +138,10 @@ public class MyAVLTree<T extends Comparable<T>> extends MyBST<T> {
             unbalanced = unbalanced.parent;
         }
         if (unbalanced != null) {
-            System.out.println("node " + unbalanced.key + " has a balance of "
-                    + getBalance(unbalanced) + "\tadded = " + added.key);
+            // System.out.println("node " + unbalanced.key + " has a balance of "
+            //         + getBalance(unbalanced) + "\tadded = " + added.key);
         } else {
-            System.out.println("all nodes in the tree have good balance");
+            // System.out.println("all nodes in the tree have good balance");
             return true;
         }
         Node temp = unbalanced;
@@ -252,120 +253,6 @@ public class MyAVLTree<T extends Comparable<T>> extends MyBST<T> {
         }
     }
 
-    // private void rotate(Node nodeToRotate, boolean leftRotation) {
-    //     // if left rotation needed:
-    //     if (leftRotation) {
-    //         System.out.println("left rotating " + nodeToRotate.key);
-    //         Node tempRightChild = nodeToRotate.right, tempGrandChild = nodeToRotate.right.left;
-
-    //         // child specific
-    //         boolean leftSubTree = nodeToRotate.parent == root
-    //                 ? nodeToRotate.key.compareTo(nodeToRotate.parent.key) < 0
-    //                 : false;
-
-    //         // child/grandchild/... specific
-    //         Node tempParent = nodeToRotate.parent;
-
-    //         // re-assign the right-left grandchild
-    //         tempRightChild.left = null;
-    //         if (tempGrandChild != null) {
-    //             tempGrandChild.parent = nodeToRotate;
-    //         }
-    //         nodeToRotate.right = tempGrandChild;
-
-    //         // if nodeToRotate is the root
-    //         if (nodeToRotate == root) {
-    //             System.out.println("unbalanced node is the root!");
-
-    //             tempRightChild.left = nodeToRotate;
-    //             nodeToRotate.parent = tempRightChild;
-
-    //             root = tempRightChild;
-    //             root.parent = null;
-
-    //             // if nodeToRotate is a child of the root
-    //         } else if (nodeToRotate.parent == root) {
-    //             System.out.println("unbalanced node is a child of root!");
-
-    //             tempRightChild.left = nodeToRotate;
-    //             nodeToRotate.parent = tempRightChild;
-
-    //             tempRightChild.parent = tempParent;
-    //             if (leftSubTree) {
-    //                 tempParent.left = tempRightChild;
-    //             } else {
-    //                 tempParent.right = tempRightChild;
-    //             }
-    //         }
-
-    //         // nodeToRotate is a grandchild, or further, of the root
-    //         else {
-    //             System.out.println("unbalanced node is a grandchild, or further, of the root");
-
-    //             tempRightChild.left = nodeToRotate;
-    //             nodeToRotate.parent = tempRightChild;
-
-    //             tempRightChild.parent = tempParent;
-    //             tempParent.left = tempRightChild;
-    //         }
-
-    //     } else {
-    //         System.out.println("right rotating " + nodeToRotate.key);
-    //         Node tempLeftChild = nodeToRotate.left, tempGrandChild = nodeToRotate.left.right;
-
-    //         // child specific
-    //         boolean rightSubTree = nodeToRotate.parent == root
-    //                 ? nodeToRotate.key.compareTo(nodeToRotate.parent.key) > 0
-    //                 : false;
-
-    //         // child/grandchild/... specific
-    //         Node tempParent = nodeToRotate.parent;
-
-    //         // re-assign the left-right grandchild
-    //         tempLeftChild.right = null;
-    //         if (tempGrandChild != null) {
-    //             tempGrandChild.parent = nodeToRotate;
-    //         }
-    //         nodeToRotate.left = tempGrandChild;
-
-    //         // if nodeToRotate is the root
-    //         if (nodeToRotate == root) {
-    //             System.out.println("unbalanced node is the root!");
-
-    //             tempLeftChild.right = nodeToRotate;
-    //             nodeToRotate.parent = tempLeftChild;
-
-    //             root = tempLeftChild;
-    //             root.parent = null;
-
-    //             // if nodeToRotate is a child of the root
-    //         } else if (nodeToRotate.parent == root) {
-    //             System.out.println("unbalanced node is a child of root!");
-
-    //             tempLeftChild.right = nodeToRotate;
-    //             nodeToRotate.parent = tempLeftChild;
-
-    //             tempLeftChild.parent = tempParent;
-    //             if (rightSubTree) {
-    //                 tempParent.right = tempLeftChild;
-    //             } else {
-    //                 tempParent.left = tempLeftChild;
-    //             }
-    //         }
-
-    //         // nodeToRotate is a grandchild, or further, of the root
-    //         else {
-    //             System.out.println("unbalanced node is a grandchild, or further, of the root");
-
-    //             tempLeftChild.right = nodeToRotate;
-    //             nodeToRotate.parent = tempLeftChild;
-
-    //             tempLeftChild.parent = tempParent;
-    //             tempParent.left = tempLeftChild;
-    //         }
-    //     }
-    // }
-
     private Node insertHelper(Node toAdd, Node root, Node parent) {
         if (root == null) {
             toAdd.parent = parent;
@@ -383,15 +270,88 @@ public class MyAVLTree<T extends Comparable<T>> extends MyBST<T> {
         return root;
     }
 
-    public int getBalance(Node node) {
+    @Override
+    public boolean delete(Object element) {
+        if (!contains(element)) {
+            return false;
+        }
+
+        // find the parent of the soon-to-be deleted node
+        // Node parent = null, ahead = root;
+        // T temp = (T) element;
+        // while (ahead.key.compareTo(temp) != 0) {
+        //     int result = ahead.key.compareTo(temp);
+        //     if (result < 0) {
+        //         // go right
+        //         parent = ahead;
+        //         ahead = ahead.right;
+        //     } else if (result > 0) {
+        //         // go left
+        //         parent = ahead;
+        //         ahead = ahead.left;
+        //     } else {
+        //         break;
+        //     }
+        // }
+        // System.out.println("parent = " + parent.key + "\tahead = " + ahead.key);
+
+        root = deleteHelper(root, element);
+        size--;
+        return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Node deleteHelper(Node root, Object element) {
+        if (root == null) {
+            return root;
+        }
+        T temp = (T) element;
+        if (root.key.compareTo(temp) < 0) {
+            // go right
+            root.right = deleteHelper(root.right, element);
+        } else if (root.key.compareTo(temp) > 0) {
+            // go left
+            root.left = deleteHelper(root.left, element);
+
+            // if root is found
+        } else {
+
+            // only right child is present OR no children are present
+            if (root.left == null) {
+                return root.right;
+            }
+
+            // only left child is present
+            if (root.right == null) {
+                return root.left;
+            }
+
+            // both children are present
+            T ios = inorderSuccessor(root);
+            root.key = ios;
+            root.right = deleteHelper(root.right, ios);
+        }
+        return root;
+    }
+
+    private T inorderSuccessor(Node node) {
+        if (size == 0) {
+            return null;
+        }
+        Node curr = node.right;
+        // go right once, then left as far as possible
+        while (curr != null && curr.left != null) {
+            curr = curr.left;
+        }
+        return curr.key;
+    }
+
+    private int getBalance(Node node) {
         return height(node.right) - height(node.left);
     }
 
-    public int height(Node node) {
-        if (node == null) {
-            return -1;
-        }
-        return Math.max(1 + height(node.left), 1 + height(node.right));
+    private int height(Node node) {
+        return node == null ? -1 : Math.max(1 + height(node.left), 1 + height(node.right));
     }
 
     @Override
