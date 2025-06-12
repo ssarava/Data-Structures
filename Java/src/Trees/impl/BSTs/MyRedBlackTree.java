@@ -91,13 +91,11 @@ public class MyRedBlackTree<T extends Comparable<T>> extends MyBST<T> {
     }
 
     public boolean insert(Object[] keysIn) {
+        int initialSize = size;
         for (int index = 0; index < keysIn.length; index++) {
-            // weird logic...
-            if (!insert(keysIn[index])) {
-                return false;
-            }
+            insert(keysIn[index]);
         }
-        return true;
+        return size != initialSize;
     }
 
     @SuppressWarnings("unchecked")
@@ -108,7 +106,6 @@ public class MyRedBlackTree<T extends Comparable<T>> extends MyBST<T> {
         }
         Node toAdd = new Node((T) keyIn);
         root = insertHelper(toAdd, root, null);
-        
         
         // redblack-specific
         handleRotationsAndColoring(toAdd);
@@ -290,13 +287,10 @@ public class MyRedBlackTree<T extends Comparable<T>> extends MyBST<T> {
     }
 
     private String toStringHelper(Node node, String indent) {
-        if (node == null) {
-            return "";
-        }
-        return indent + "k: " + node.key + "\n" + indent + "l:"
-                + (node.left == null ? " null" : "\n") + toStringHelper(node.left, indent + "    ")
-                + "\n" + indent + "r:" + (node.right == null ? " null" : "\n")
-                + toStringHelper(node.right, indent + "    ");
+        return node == null ? "" : indent + (node == LEAF ? "LEAF" : "k: " + (node.key == null ? "LEAF" : node.key) + "\n" + indent + "c: " + (node.color == Node.BLACK ? "Black" : "Red") + "\n" + indent + 
+                "l: " + (node.left == null ? "null" : "\n") + toStringHelper(node.left, indent + "    ") + "\n" + indent + 
+                "r: " + (node.right == null ? "null" : "\n") + toStringHelper(node.right, indent + "    "))
+                ;
     }
 
     @Override
